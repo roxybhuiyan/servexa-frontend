@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "new-ui",
+      "projectId": "0913c583-d0f7-4854-8ce6-166df55bf1ac",
+      "activeDraftId": "74f01ded-24ad-4484-b7ac-911ce78759da",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "f24df5e9560dacb43d9dac62d614c51b5a5cf17c417f74aa912f4a5edde44817"
+      },
+      "drafts": {
+        "74f01ded-24ad-4484-b7ac-911ce78759da": {
+          "title": "Servexa Marketplace Foundation",
+          "visualDirection": "paper and forest structural minimalism",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-10-05T14:37:26.146253+00:00"
+    }
+  }
+}

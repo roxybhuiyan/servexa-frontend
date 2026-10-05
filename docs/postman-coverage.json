@@ -1,0 +1,659 @@
+[
+  {
+    "id": "P01",
+    "name": "Health",
+    "e": "E64",
+    "pointer": "/item/0/item/0",
+    "status": "intentional exception",
+    "implementation": null,
+    "note": "Operational GET /health, outside API prefix; not polled by UI."
+  },
+  {
+    "id": "P02",
+    "name": "Register Customer",
+    "e": "E01",
+    "pointer": "/item/1/item/0",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Register / Registration"
+  },
+  {
+    "id": "P03",
+    "name": "Register Provider",
+    "e": "E01",
+    "pointer": "/item/1/item/1",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Register / Registration"
+  },
+  {
+    "id": "P04",
+    "name": "Login Customer",
+    "e": "E02",
+    "pointer": "/item/1/item/2",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Login / Login"
+  },
+  {
+    "id": "P05",
+    "name": "Login Provider",
+    "e": "E02",
+    "pointer": "/item/1/item/3",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Login / Login"
+  },
+  {
+    "id": "P06",
+    "name": "Login Admin",
+    "e": "E02",
+    "pointer": "/item/1/item/4",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Login / Login"
+  },
+  {
+    "id": "P07",
+    "name": "Refresh Token",
+    "e": "E03",
+    "pointer": "/item/1/item/5",
+    "status": "implemented",
+    "implementation": "src/api/client.ts",
+    "note": "Session adapter / Refresh session"
+  },
+  {
+    "id": "P08",
+    "name": "Logout",
+    "e": "E04",
+    "pointer": "/item/1/item/6",
+    "status": "implemented",
+    "implementation": "src/app/session.tsx",
+    "note": "Account menu / Logout"
+  },
+  {
+    "id": "P09",
+    "name": "Get Current User",
+    "e": "E05",
+    "pointer": "/item/1/item/7",
+    "status": "implemented",
+    "implementation": "src/app/session.tsx",
+    "note": "Session adapter / Current identity"
+  },
+  {
+    "id": "P10",
+    "name": "Get My Profile",
+    "e": "E06",
+    "pointer": "/item/2/item/0",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Profile / Own profile"
+  },
+  {
+    "id": "P11",
+    "name": "Update My Profile",
+    "e": "E07",
+    "pointer": "/item/2/item/1",
+    "status": "implemented",
+    "implementation": "src/features/auth.tsx",
+    "note": "Profile / Edit user profile"
+  },
+  {
+    "id": "P12",
+    "name": "Get My Provider Profile",
+    "e": "E08",
+    "pointer": "/item/3/item/0",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider profile / Provider profile"
+  },
+  {
+    "id": "P13",
+    "name": "Update My Provider Profile",
+    "e": "E09",
+    "pointer": "/item/3/item/1",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider profile / Edit provider profile"
+  },
+  {
+    "id": "P14",
+    "name": "Get Public Provider",
+    "e": "E10",
+    "pointer": "/item/3/item/2",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Provider details / Public provider"
+  },
+  {
+    "id": "P15",
+    "name": "Get My Services",
+    "e": "E14",
+    "pointer": "/item/3/item/3",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider services / Own services"
+  },
+  {
+    "id": "P16",
+    "name": "Create Service",
+    "e": "E15",
+    "pointer": "/item/3/item/4",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider service form / Create service"
+  },
+  {
+    "id": "P17",
+    "name": "Update Service",
+    "e": "E16",
+    "pointer": "/item/3/item/5",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider service form / Edit service"
+  },
+  {
+    "id": "P18",
+    "name": "Delete Service",
+    "e": "E17",
+    "pointer": "/item/3/item/6",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider services / Delete service"
+  },
+  {
+    "id": "P19",
+    "name": "Get My Availability",
+    "e": "E19",
+    "pointer": "/item/3/item/7",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider availability / Own slots"
+  },
+  {
+    "id": "P20",
+    "name": "Create Availability",
+    "e": "E20",
+    "pointer": "/item/3/item/8",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider availability / Create slot"
+  },
+  {
+    "id": "P21",
+    "name": "Update Availability",
+    "e": "E21",
+    "pointer": "/item/3/item/9",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider availability / Edit slot"
+  },
+  {
+    "id": "P22",
+    "name": "Delete Availability",
+    "e": "E22",
+    "pointer": "/item/3/item/10",
+    "status": "implemented",
+    "implementation": "src/features/provider.tsx",
+    "note": "Provider availability / Delete slot"
+  },
+  {
+    "id": "P23",
+    "name": "Get My Bookings",
+    "e": "E27",
+    "pointer": "/item/3/item/11",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider jobs / Incoming/active/history jobs"
+  },
+  {
+    "id": "P24",
+    "name": "Get Provider Booking",
+    "e": "E28",
+    "pointer": "/item/3/item/12",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider job detail / Job detail"
+  },
+  {
+    "id": "P25",
+    "name": "Accept Booking",
+    "e": "E29",
+    "pointer": "/item/3/item/13",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider job detail / Accept job"
+  },
+  {
+    "id": "P26",
+    "name": "Reject Booking",
+    "e": "E30",
+    "pointer": "/item/3/item/14",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider job detail / Reject job"
+  },
+  {
+    "id": "P27",
+    "name": "Start Booking",
+    "e": "E31",
+    "pointer": "/item/3/item/15",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider job detail / Start job"
+  },
+  {
+    "id": "P28",
+    "name": "Complete Booking",
+    "e": "E32",
+    "pointer": "/item/3/item/16",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Provider job detail / Complete job"
+  },
+  {
+    "id": "P29",
+    "name": "Public Provider Reviews",
+    "e": "E42",
+    "pointer": "/item/3/item/17",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service / Provider details / Public providers reviews"
+  },
+  {
+    "id": "P30",
+    "name": "Provider Rating Summary",
+    "e": "E43",
+    "pointer": "/item/3/item/18",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service / Provider details / Live providers rating"
+  },
+  {
+    "id": "P31",
+    "name": "Public Category List",
+    "e": "E11",
+    "pointer": "/item/4/item/0",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Catalog / Browse categories"
+  },
+  {
+    "id": "P32",
+    "name": "Admin Category List",
+    "e": "E58",
+    "pointer": "/item/4/item/1",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin categories / Category management list"
+  },
+  {
+    "id": "P33",
+    "name": "Admin Create Category",
+    "e": "E59",
+    "pointer": "/item/4/item/2",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin category form / Create category"
+  },
+  {
+    "id": "P34",
+    "name": "Admin Update Category",
+    "e": "E60",
+    "pointer": "/item/4/item/3",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin category form / Edit category"
+  },
+  {
+    "id": "P35",
+    "name": "Admin Delete Category",
+    "e": "E61",
+    "pointer": "/item/4/item/4",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin categories / Delete category"
+  },
+  {
+    "id": "P36",
+    "name": "Public Service List",
+    "e": "E12",
+    "pointer": "/item/5/item/0",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Services / Discover services"
+  },
+  {
+    "id": "P37",
+    "name": "Public Service Detail",
+    "e": "E13",
+    "pointer": "/item/5/item/1",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service details / Service details"
+  },
+  {
+    "id": "P38",
+    "name": "Search Services",
+    "e": "E12",
+    "pointer": "/item/5/item/2",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Services / Discover services"
+  },
+  {
+    "id": "P39",
+    "name": "Filter by Category",
+    "e": "E12",
+    "pointer": "/item/5/item/3",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Services / Discover services"
+  },
+  {
+    "id": "P40",
+    "name": "Filter by Price",
+    "e": "E12",
+    "pointer": "/item/5/item/4",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Services / Discover services"
+  },
+  {
+    "id": "P41",
+    "name": "Filter by City",
+    "e": "E12",
+    "pointer": "/item/5/item/5",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Services / Discover services"
+  },
+  {
+    "id": "P42",
+    "name": "Service Availability",
+    "e": "E18",
+    "pointer": "/item/5/item/6",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service details / Booking / Available slots"
+  },
+  {
+    "id": "P43",
+    "name": "Service Reviews",
+    "e": "E40",
+    "pointer": "/item/5/item/7",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service / Provider details / Public services reviews"
+  },
+  {
+    "id": "P44",
+    "name": "Service Rating Summary",
+    "e": "E41",
+    "pointer": "/item/5/item/8",
+    "status": "implemented",
+    "implementation": "src/features/public.tsx",
+    "note": "Service / Provider details / Live services rating"
+  },
+  {
+    "id": "P45",
+    "name": "Create Booking",
+    "e": "E23",
+    "pointer": "/item/6/item/0",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Booking / Create booking"
+  },
+  {
+    "id": "P46",
+    "name": "My Bookings",
+    "e": "E24",
+    "pointer": "/item/6/item/1",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Customer bookings / Booking history"
+  },
+  {
+    "id": "P47",
+    "name": "Booking Detail",
+    "e": "E25",
+    "pointer": "/item/6/item/2",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Customer booking detail / Booking detail"
+  },
+  {
+    "id": "P48",
+    "name": "Cancel Booking",
+    "e": "E26",
+    "pointer": "/item/6/item/3",
+    "status": "implemented",
+    "implementation": "src/features/bookings.tsx",
+    "note": "Customer booking detail / Cancel booking"
+  },
+  {
+    "id": "P49",
+    "name": "Initiate Stripe Checkout",
+    "e": "E33",
+    "pointer": "/item/7/item/0",
+    "status": "implemented",
+    "implementation": "src/features/payments.tsx",
+    "note": "Booking payment / Start Checkout"
+  },
+  {
+    "id": "P50",
+    "name": "Get Payment by Booking",
+    "e": "E34",
+    "pointer": "/item/7/item/1",
+    "status": "implemented",
+    "implementation": "src/features/payments.tsx",
+    "note": "Payment return / Booking detail / Payment reconciliation"
+  },
+  {
+    "id": "P51",
+    "name": "Stripe Webhook (documentation only)",
+    "e": "E35",
+    "pointer": "/item/7/item/2",
+    "status": "intentional exception",
+    "implementation": null,
+    "note": "Server-to-server Stripe webhook. Browser must never call."
+  },
+  {
+    "id": "P52",
+    "name": "Payment Success Redirect (informational)",
+    "e": "E65",
+    "pointer": "/item/7/item/3",
+    "status": "intentional exception",
+    "implementation": null,
+    "note": "Backend informational success redirect. Frontend uses E34 + E25."
+  },
+  {
+    "id": "P53",
+    "name": "Payment Cancel Redirect (informational)",
+    "e": "E66",
+    "pointer": "/item/7/item/4",
+    "status": "intentional exception",
+    "implementation": null,
+    "note": "Backend informational cancel redirect. Frontend uses E34 + E25."
+  },
+  {
+    "id": "P54",
+    "name": "Create Review",
+    "e": "E36",
+    "pointer": "/item/8/item/0",
+    "status": "implemented",
+    "implementation": "src/features/reviews.tsx",
+    "note": "Completed booking / Reviews / Write review"
+  },
+  {
+    "id": "P55",
+    "name": "My Reviews",
+    "e": "E37",
+    "pointer": "/item/8/item/1",
+    "status": "implemented",
+    "implementation": "src/features/reviews.tsx",
+    "note": "Customer reviews / Own reviews"
+  },
+  {
+    "id": "P56",
+    "name": "Update Review",
+    "e": "E38",
+    "pointer": "/item/8/item/2",
+    "status": "implemented",
+    "implementation": "src/features/reviews.tsx",
+    "note": "Customer reviews / Edit review"
+  },
+  {
+    "id": "P57",
+    "name": "Delete Review",
+    "e": "E39",
+    "pointer": "/item/8/item/3",
+    "status": "implemented",
+    "implementation": "src/features/reviews.tsx",
+    "note": "Customer reviews / Delete review"
+  },
+  {
+    "id": "P58",
+    "name": "List Users",
+    "e": "E52",
+    "pointer": "/item/9/item/0",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin users / User management list"
+  },
+  {
+    "id": "P59",
+    "name": "Get User",
+    "e": "E53",
+    "pointer": "/item/9/item/1",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin user detail / User detail"
+  },
+  {
+    "id": "P60",
+    "name": "Update User Status",
+    "e": "E54",
+    "pointer": "/item/9/item/2",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin users / User moderation"
+  },
+  {
+    "id": "P61",
+    "name": "Soft Delete User",
+    "e": "E55",
+    "pointer": "/item/9/item/3",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin users / Delete user"
+  },
+  {
+    "id": "P62",
+    "name": "List Providers",
+    "e": "E56",
+    "pointer": "/item/9/item/4",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin providers / Provider moderation list"
+  },
+  {
+    "id": "P63",
+    "name": "Update Provider Status",
+    "e": "E57",
+    "pointer": "/item/9/item/5",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin providers / Provider approval/rejection"
+  },
+  {
+    "id": "P64",
+    "name": "Admin Review List",
+    "e": "E62",
+    "pointer": "/item/9/item/6",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin reviews / Review moderation list"
+  },
+  {
+    "id": "P65",
+    "name": "Admin Delete Review",
+    "e": "E63",
+    "pointer": "/item/9/item/7",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin reviews / Moderate review"
+  },
+  {
+    "id": "P66",
+    "name": "Overview",
+    "e": "E44",
+    "pointer": "/item/10/item/0",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Marketplace counts"
+  },
+  {
+    "id": "P67",
+    "name": "Revenue",
+    "e": "E45",
+    "pointer": "/item/10/item/1",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Revenue totals"
+  },
+  {
+    "id": "P68",
+    "name": "Booking Analytics",
+    "e": "E46",
+    "pointer": "/item/10/item/2",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Booking analytics"
+  },
+  {
+    "id": "P69",
+    "name": "Provider Analytics",
+    "e": "E47",
+    "pointer": "/item/10/item/3",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Provider analytics"
+  },
+  {
+    "id": "P70",
+    "name": "Service Analytics",
+    "e": "E48",
+    "pointer": "/item/10/item/4",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Service analytics"
+  },
+  {
+    "id": "P71",
+    "name": "Recent Activity",
+    "e": "E49",
+    "pointer": "/item/10/item/5",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin dashboard / Recent audit activity"
+  },
+  {
+    "id": "P72",
+    "name": "List Audit Logs",
+    "e": "E50",
+    "pointer": "/item/11/item/0",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin audit / Audit list"
+  },
+  {
+    "id": "P73",
+    "name": "Audit Log Detail",
+    "e": "E51",
+    "pointer": "/item/11/item/1",
+    "status": "implemented",
+    "implementation": "src/features/admin.tsx",
+    "note": "Admin audit detail / Audit detail"
+  }
+]

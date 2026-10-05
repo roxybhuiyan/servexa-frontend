@@ -1,0 +1,219 @@
+[
+  {
+    "id": "UI01",
+    "path": "/",
+    "role": "Public",
+    "implementation": "src/features/public.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI02",
+    "path": "/services",
+    "role": "Public",
+    "implementation": "src/features/public.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI03",
+    "path": "/services/:serviceId",
+    "role": "Public",
+    "implementation": "src/features/public.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI04",
+    "path": "/providers/:providerId",
+    "role": "Public",
+    "implementation": "src/features/public.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI05",
+    "path": "/register",
+    "role": "Public",
+    "implementation": "src/features/auth.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI06",
+    "path": "/login",
+    "role": "Public",
+    "implementation": "src/features/auth.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI07",
+    "path": "/account/profile",
+    "role": "Any",
+    "implementation": "src/features/auth.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI08",
+    "path": "/customer",
+    "role": "CUSTOMER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI09",
+    "path": "/customer/bookings",
+    "role": "CUSTOMER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI10",
+    "path": "/customer/bookings/new?serviceId=...&slotId=...",
+    "role": "CUSTOMER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI11",
+    "path": "/customer/bookings/:bookingId",
+    "role": "CUSTOMER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI12",
+    "path": "/payments/success",
+    "role": "CUSTOMER return context",
+    "implementation": "src/features/payments.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI13",
+    "path": "/payments/cancel",
+    "role": "CUSTOMER return context",
+    "implementation": "src/features/payments.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI14",
+    "path": "/customer/reviews",
+    "role": "CUSTOMER",
+    "implementation": "src/features/reviews.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI15",
+    "path": "/provider",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI16",
+    "path": "/provider/profile",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI17",
+    "path": "/provider/services",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI18",
+    "path": "/provider/services/new",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI19",
+    "path": "/provider/services/:serviceId/edit",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI20",
+    "path": "/provider/availability",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI21",
+    "path": "/provider/bookings",
+    "role": "PROVIDER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI22",
+    "path": "/provider/bookings/:bookingId",
+    "role": "PROVIDER",
+    "implementation": "src/features/bookings.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI23",
+    "path": "/provider/reviews",
+    "role": "PROVIDER",
+    "implementation": "src/features/provider.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI24",
+    "path": "/admin",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI25",
+    "path": "/admin/users",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI26",
+    "path": "/admin/users/:userId",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI27",
+    "path": "/admin/providers",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI28",
+    "path": "/admin/categories",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI29",
+    "path": "/admin/reviews",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI30",
+    "path": "/admin/audit-logs",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  },
+  {
+    "id": "UI31",
+    "path": "/admin/audit-logs/:auditLogId",
+    "role": "ADMIN",
+    "implementation": "src/features/admin.tsx",
+    "status": "implemented"
+  }
+]

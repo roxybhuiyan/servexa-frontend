@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --color-paper: #F7F7F5;
+      --color-forest: #1A3C2B;
+      --color-charcoal: #242B27;
+      --color-muted: #626A64;
+      --color-mint: #9EFFBF;
+      --color-divider: #d7ddd6;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--color-paper);
+      color: var(--color-charcoal);
+      margin: 0;
+    }
+
+    .font-mono {
+      font-family: 'JetBrains+Mono', monospace;
+    }
+
+    .text-forest {
+      color: var(--color-forest);
+    }
+
+    .bg-forest {
+      background-color: var(--color-forest);
+    }
+
+    .bg-mint {
+      background-color: var(--color-mint);
+    }
+
+    .border-divider {
+      border-color: var(--color-divider);
+    }
+
+    .sharp-corners {
+      border-radius: 2px;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 0 12px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      color: var(--color-charcoal);
+      transition: background-color 0.2s;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(26, 60, 43, 0.05);
+    }
+
+    .service-card-skeleton {
+      background: white;
+      border: 1px solid var(--color-divider);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .skeleton-box {
+      background: #eee;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skeleton-box::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .hero-heading {
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    input:focus {
+      outline: 2px solid var(--color-forest);
+      outline-offset: -2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen flex flex-col" data-sd-id="1">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-divider sticky top-0 z-50" data-sd-id="2">
+      <div class="max-w-[1200px] mx-auto px-6 h-[64px] flex items-center justify-between" data-sd-id="3">
+        <div class="flex items-center gap-8" data-sd-id="4">
+          <a href="/" id="nav-logo" class="text-forest font-bold text-xl tracking-tight" data-sd-id="5">
+            SERVEXA
+          </a>
+          <div class="hidden md:flex items-center border-l border-divider ml-2 pl-6 gap-2" data-sd-id="6">
+            <a href="/catalog" id="nav-catalog-link" class="nav-link" data-sd-id="7">Catalog</a>
+            <a href="/providers" id="nav-providers-link" class="nav-link" data-sd-id="8">Providers</a>
+          </div>
+        </div>
+        <div class="flex items-center gap-4" data-sd-id="9">
+          <a href="/login" id="nav-login-link" class="text-sm font-mono uppercase text-muted hover:text-charcoal" data-sd-id="10">Login</a>
+          <a href="/join" id="nav-join-btn" class="h-[44px] px-6 bg-forest text-white text-sm font-medium flex items-center sharp-corners" data-sd-id="11">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-1" data-sd-id="12">
+      <!-- Hero Section -->
+      <section class="bg-white border-b border-divider py-24 md:py-32" data-sd-id="13">
+        <div class="max-w-[1200px] mx-auto px-6" data-sd-id="14">
+          <div class="max-w-[700px]" data-sd-id="15">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted block mb-4" data-sd-id="16">Service Marketplace</span>
+            <h1 class="hero-heading text-6xl md:text-8xl font-bold text-forest mb-8" data-sd-id="17">Good service. Less searching.</h1>
+            <div class="flex flex-col sm:flex-row gap-0 border border-divider sharp-corners overflow-hidden" data-sd-id="18">
+              <div class="flex-1 flex items-center px-4 bg-paper" data-sd-id="19">
+                <iconify-icon icon="lucide:search" class="text-muted mr-3"></iconify-icon>
+                <input type="text" placeholder="What do you need help with?" class="w-full h-14 bg-transparent text-charcoal placeholder:text-muted focus:outline-none" data-sd-id="20">
+              </div>
+              <button class="h-14 px-8 bg-forest text-white font-medium hover:bg-opacity-90 transition-all sharp-corners" data-sd-id="21">Search Catalog</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Marketplace Interface -->
+      <section class="max-w-[1200px] mx-auto px-6 py-16" data-sd-id="22">
+        <div class="flex flex-col lg:flex-row gap-12" data-sd-id="23">
+          
+          <!-- Sidebar Navigation Preview (Private/Contextual UI) -->
+          <aside class="w-full lg:w-[240px] shrink-0" data-sd-id="24">
+            <div class="sticky top-[100px]" data-sd-id="25">
+              <h3 class="font-mono text-[10px] uppercase tracking-widest text-muted mb-6" data-sd-id="26">Categories</h3>
+              <nav class="flex flex-col gap-1" data-sd-id="27">
+                <a href="#" id="filter-all" class="h-10 px-3 bg-mint text-forest font-medium flex items-center sharp-corners" data-sd-id="28">All Services</a>
+                <a href="#" id="filter-home" class="h-10 px-3 text-muted hover:text-charcoal flex items-center sharp-corners" data-sd-id="29">Home Maintenance</a>
+                <a href="#" id="filter-tech" class="h-10 px-3 text-muted hover:text-charcoal flex items-center sharp-corners" data-sd-id="30">Technical Support</a>
+                <a href="#" id="filter-creative" class="h-10 px-3 text-muted hover:text-charcoal flex items-center sharp-corners" data-sd-id="31">Creative Work</a>
+                <a href="#" id="filter-admin" class="h-10 px-3 text-muted hover:text-charcoal flex items-center sharp-corners" data-sd-id="32">Administration</a>
+              </nav>
+
+              <div class="mt-12 pt-8 border-t border-divider" data-sd-id="33">
+                <h3 class="font-mono text-[10px] uppercase tracking-widest text-muted mb-6" data-sd-id="34">Your Account</h3>
+                <nav class="flex flex-col gap-1" data-sd-id="35">
+                  <a href="/dashboard" id="side-dashboard" class="h-10 px-3 text-muted hover:text-charcoal flex items-center gap-3" data-sd-id="36">
+                    <iconify-icon icon="lucide:layout-dashboard"></iconify-icon>
+                    <span data-sd-id="37">Dashboard</span>
+                  </a>
+                  <a href="/bookings" id="side-bookings" class="h-10 px-3 text-muted hover:text-charcoal flex items-center gap-3" data-sd-id="38">
+                    <iconify-icon icon="lucide:calendar"></iconify-icon>
+                    <span data-sd-id="39">My Bookings</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Service Grid Content -->
+          <div class="flex-1" data-sd-id="40">
+            <div class="flex items-center justify-between mb-8 pb-4 border-b border-divider" data-sd-id="41">
+              <h2 class="text-2xl font-bold text-forest" data-sd-id="42">Available Services</h2>
+              <div class="flex items-center gap-2" data-sd-id="43">
+                <span class="text-xs font-mono text-muted" data-sd-id="44">SORT BY</span>
+                <select class="bg-transparent text-sm font-medium focus:outline-none cursor-pointer" data-sd-id="45">
+                  <option data-sd-id="46">Recent</option>
+                  <option data-sd-id="47">Price: Low to High</option>
+                  <option data-sd-id="48">Availability</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Loading / Empty State Simulation -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" data-sd-id="49">
+              <!-- Skeleton Card 1 -->
+              <div class="service-card-skeleton" data-sd-id="50">
+                <div class="h-48 skeleton-box" data-sd-id="51"></div>
+                <div class="p-5 space-y-3" data-sd-id="52">
+                  <div class="h-4 w-1/3 skeleton-box sharp-corners" data-sd-id="53"></div>
+                  <div class="h-6 w-full skeleton-box sharp-corners" data-sd-id="54"></div>
+                  <div class="h-4 w-2/3 skeleton-box sharp-corners" data-sd-id="55"></div>
+                  <div class="pt-4 flex justify-between items-center" data-sd-id="56">
+                    <div class="h-8 w-20 skeleton-box sharp-corners" data-sd-id="57"></div>
+                    <div class="h-8 w-24 skeleton-box sharp-corners" data-sd-id="58"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skeleton Card 2 -->
+              <div class="service-card-skeleton" data-sd-id="59">
+                <div class="h-48 skeleton-box" data-sd-id="60"></div>
+                <div class="p-5 space-y-3" data-sd-id="61">
+                  <div class="h-4 w-1/3 skeleton-box sharp-corners" data-sd-id="62"></div>
+                  <div class="h-6 w-full skeleton-box sharp-corners" data-sd-id="63"></div>
+                  <div class="h-4 w-2/3 skeleton-box sharp-corners" data-sd-id="64"></div>
+                  <div class="pt-4 flex justify-between items-center" data-sd-id="65">
+                    <div class="h-8 w-20 skeleton-box sharp-corners" data-sd-id="66"></div>
+                    <div class="h-8 w-24 skeleton-box sharp-corners" data-sd-id="67"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty State Block -->
+              <div class="col-span-full border border-dashed border-divider p-16 flex flex-col items-center justify-center text-center bg-white sharp-corners" data-sd-id="68">
+                <iconify-icon icon="lucide:layers" class="text-4xl text-divider mb-4"></iconify-icon>
+                <p class="text-muted font-mono text-sm mb-2" data-sd-id="69">NO SERVICES FOUND IN THIS CATEGORY</p>
+                <p class="text-charcoal max-w-[300px]" data-sd-id="70">Try adjusting your filters or search terms to find available providers.</p>
+                <button class="mt-6 h-[44px] px-6 border border-forest text-forest text-sm font-medium sharp-corners hover:bg-forest hover:text-white transition-colors" data-sd-id="71">
+                  Clear All Filters
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-forest text-white py-16 mt-24" data-sd-id="72">
+      <div class="max-w-[1200px] mx-auto px-6" data-sd-id="73">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12" data-sd-id="74">
+          <div class="col-span-1 md:col-span-2" data-sd-id="75">
+            <span class="text-xl font-bold tracking-tight" data-sd-id="76">SERVEXA</span>
+            <p class="mt-4 text-mint/60 max-w-sm text-sm leading-relaxed" data-sd-id="77">
+              The structural marketplace for verified services. Simplified booking, transparent provider management, and architectural integrity in every transaction.
+            </p>
+          </div>
+          <div data-sd-id="78">
+            <h4 class="font-mono text-[10px] uppercase tracking-widest text-mint mb-6" data-sd-id="79">Marketplace</h4>
+            <ul class="space-y-4" data-sd-id="80">
+              <li data-sd-id="81"><a href="#" id="footer-cat-link" class="text-sm text-white/80 hover:text-white" data-sd-id="82">Browse Categories</a></li>
+              <li data-sd-id="83"><a href="#" id="footer-prov-link" class="text-sm text-white/80 hover:text-white" data-sd-id="84">Provider Directory</a></li>
+              <li data-sd-id="85"><a href="#" id="footer-pricing-link" class="text-sm text-white/80 hover:text-white" data-sd-id="86">Pricing Model</a></li>
+            </ul>
+          </div>
+          <div data-sd-id="87">
+            <h4 class="font-mono text-[10px] uppercase tracking-widest text-mint mb-6" data-sd-id="88">Platform</h4>
+            <ul class="space-y-4" data-sd-id="89">
+              <li data-sd-id="90"><a href="#" id="footer-help-link" class="text-sm text-white/80 hover:text-white" data-sd-id="91">Help Center</a></li>
+              <li data-sd-id="92"><a href="#" id="footer-api-link" class="text-sm text-white/80 hover:text-white" data-sd-id="93">API Documentation</a></li>
+              <li data-sd-id="94"><a href="#" id="footer-terms-link" class="text-sm text-white/80 hover:text-white" data-sd-id="95">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4" data-sd-id="96">
+          <p class="text-[10px] font-mono text-white/40 uppercase" data-sd-id="97">© 2024 SERVEXA INFRASTRUCTURE</p>
+          <div class="flex gap-6" data-sd-id="98">
+            <iconify-icon icon="ri:twitter-x-line" class="text-white/40 hover:text-white cursor-pointer"></iconify-icon>
+            <iconify-icon icon="ri:github-line" class="text-white/40 hover:text-white cursor-pointer"></iconify-icon>
+            <iconify-icon icon="ri:linkedin-box-line" class="text-white/40 hover:text-white cursor-pointer"></iconify-icon>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+</body></html>
