@@ -12,6 +12,7 @@ import {
   Pagination,
   Empty,
   Confirm,
+  ErrorBox,
 } from "../components/ui";
 import { api } from "../api/services";
 import { queryClient, useSession } from "../app/session";
@@ -120,12 +121,39 @@ export function ProviderServices() {
   return (
     <>
       <Title title="Your services">
-        {profile.data?.status === "APPROVED" && (
+        {!profile.error && profile.data?.status === "APPROVED" && (
           <Link className="button primary" to="/provider/services/new">
             Create service +
           </Link>
         )}
       </Title>
+      {profile.isPending ? (
+        <p role="status">Loading provider approval status…</p>
+      ) : profile.error || profile.data?.status !== "APPROVED" ? (
+        <Panel>
+          {profile.error ? (
+            <>
+              <p>Unable to check your provider approval status.</p>
+              <ErrorBox error={profile.error} />
+            </>
+          ) : (
+            <>
+              {profile.data && <Status value={profile.data.status} />}
+              <p>
+                {profile.data?.status === "REJECTED"
+                  ? "Your provider profile was rejected. Service creation is unavailable unless your profile is approved."
+                  : "Your provider profile is awaiting approval. Service creation is unavailable until your profile is approved."}
+              </p>
+            </>
+          )}
+          <button
+            disabled={profile.isFetching}
+            onClick={() => void profile.refetch()}
+          >
+            {profile.isFetching ? "Refreshing status…" : "Refresh status"}
+          </button>
+        </Panel>
+      ) : null}
       <Filters
         fields={[
           { name: "search" },
