@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, useId, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
-import { api, type Endpoint, type Responses } from "../api/services";
 import { ApiError } from "../api/client";
-import { useSession } from "../app/session";
+import { api, type Endpoint } from "../api/services";
 import type { Page } from "../api/types";
+import { useSession } from "../app/session";
 import { label, localDate } from "../lib/format";
 import s from "./ui.module.css";
 export function useApi<E extends Endpoint>(
@@ -436,5 +436,6 @@ export function Metrics({ value }: { value: unknown }) {
         ))}
       </dl>
     );
+
   return <span>{String(value ?? "—")}</span>;
 }
