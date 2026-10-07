@@ -15,10 +15,17 @@ export function useApi<E extends Endpoint>(
   enabled = true,
 ) {
   const { user } = useSession();
+  const liveBooking = ["E24", "E25", "E27", "E28", "E34"].includes(endpoint);
   return useQuery({
     queryKey: [endpoint, user?.id || "public", id || "", query || {}],
     queryFn: ({ signal }) => api(endpoint, { id, query, signal }),
     enabled,
+    ...(liveBooking
+      ? {
+          refetchOnMount: "always" as const,
+          refetchOnWindowFocus: "always" as const,
+        }
+      : {}),
   });
 }
 export function Title({

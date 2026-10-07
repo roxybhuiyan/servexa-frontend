@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -26,6 +27,7 @@ import { PaymentPanel } from "./payments";
 import { ReviewCreate } from "./reviews";
 import { ApiError } from "../api/client";
 import * as schemas from "../contracts/forms";
+import type { PublicSlot } from "../api/types";
 export const bookingStatuses = [
   "PENDING",
   "ACCEPTED",
@@ -64,6 +66,16 @@ export function BookingList({
         }
         eyebrow={provider ? "PROVIDER WORKSPACE" : "CUSTOMER WORKSPACE"}
       >
+        <button
+          disabled={query.isFetching}
+          onClick={() => void query.refetch()}
+        >
+          {query.isFetching
+            ? "Refreshing…"
+            : provider
+              ? "Refresh jobs"
+              : "Refresh bookings"}
+        </button>
         {!provider && (
           <Link className="button primary" to="/services">
             Find a service ↗
@@ -92,10 +104,23 @@ export function BookingList({
                         {b.service.title}
                       </Link>
                     </h2>
-                    <p>{date(b.slot.startTime)}</p>
+                    <p>
+                      {date(b.slot.startTime)} – {date(b.slot.endTime)}
+                    </p>
+                    {provider && "customer" in b && (
+                      <p>
+                        Customer: {b.customer.name} · {b.customer.phone}
+                      </p>
+                    )}
                     <p>{b.provider.businessName}</p>
+                    {b.notes && <p>{b.notes}</p>}
                     <strong>{money(b.totalAmount)}</strong>
                     <p>Payment: {b.payment?.status || "UNPAID"}</p>
+                    <Link className="button" to={`${root}/bookings/${b.id}`}>
+                      {provider && b.status === "PENDING"
+                        ? "Review booking / Approve or reject"
+                        : "View booking"}
+                    </Link>
                   </Panel>
                 ))}
               </div>
@@ -113,6 +138,10 @@ export function BookingList({
   );
 }
 export function NewBooking() {
+  const location = useLocation();
+  const [selectedSlot, setSelectedSlot] = useState<PublicSlot | null>(
+    location.state?.slot ?? null,
+  );
   const [conflict, setConflict] = useState<string | null>(null);
   const [params, setParams] = useSearchParams();
   const serviceId = params.get("serviceId") || "",
@@ -140,14 +169,28 @@ export function NewBooking() {
               </Panel>
               <Slots
                 serviceId={serviceId}
-                onChoose={(id) => {
+                onChoose={(slot) => {
                   setConflict(null);
-                  setParams({ serviceId, slotId: id });
+                  setSelectedSlot(slot);
+                  setParams({ serviceId, slotId: slot.id });
                 }}
               />
+              {!slotId && (
+                <p role="status">
+                  Select an available time above to continue. If no times are
+                  listed, this service cannot currently be booked.
+                </p>
+              )}
               {slotId && (
                 <Panel>
                   <h2>Selected time</h2>
+                  {selectedSlot?.id === slotId &&
+                    selectedSlot.serviceId === serviceId && (
+                      <p>
+                        {date(selectedSlot.startTime)} –{" "}
+                        {date(selectedSlot.endTime)}
+                      </p>
+                    )}
                   <p className="id">Slot reference: {slotId}</p>
                   <Form
                     key={slotId}
@@ -169,13 +212,19 @@ export function NewBooking() {
                           body: data as schemas.CreateBooking,
                         });
                         await refreshBooking();
-                        navigate(`/customer/bookings/${b.id}`);
+                        navigate(`/customer/bookings/${b.id}`, {
+                          state: { createdBookingId: b.id },
+                        });
                       } catch (e) {
-                        if (e instanceof ApiError && e.status === 409) {
+                        if (
+                          e instanceof ApiError &&
+                          [404, 409].includes(e.status)
+                        ) {
                           await queryClient.invalidateQueries({
                             queryKey: ["E18"],
                           });
                           setParams({ serviceId });
+                          setSelectedSlot(null);
                           setConflict(
                             "This time cannot be booked. Released slots may retain an earlier booking. Choose another time.",
                           );
@@ -198,17 +247,42 @@ export function NewBooking() {
   );
 }
 export function BookingDetail({ provider = false }: { provider?: boolean }) {
+  const location = useLocation();
   const { bookingId = "" } = useParams();
   const q = useApi(provider ? "E28" : "E25", bookingId);
   const { user } = useSession();
   return (
     <>
       <Title title={provider ? "Job details" : "Booking details"}>
-        <button onClick={() => void refreshBooking()}>Refresh status</button>
+        <button disabled={q.isFetching} onClick={() => void refreshBooking()}>
+          {q.isFetching ? "Refreshing…" : "Refresh status"}
+        </button>
       </Title>
       <Remote query={q}>
         {(b) => (
           <>
+            {!provider && location.state?.createdBookingId === b.id && (
+              <Panel>
+                <p role="status">Booking request created successfully.</p>
+                <p>
+                  Your current status is {b.status}. Provider approval is
+                  required before payment.
+                </p>
+                <Link to="/customer/bookings">View all your bookings →</Link>
+              </Panel>
+            )}
+            {!provider && b.status === "PENDING" && (
+              <p>Waiting for the provider to approve or reject your request.</p>
+            )}
+            {!provider && b.status === "ACCEPTED" && (
+              <p>
+                The provider approved your request (ACCEPTED). Continue with the
+                existing Checkout below.
+              </p>
+            )}
+            {!provider && b.status === "REJECTED" && (
+              <p>The provider rejected this booking request.</p>
+            )}
             <div className="detail-grid">
               <Panel>
                 <Status value={b.status} />
@@ -259,7 +333,11 @@ export function BookingDetail({ provider = false }: { provider?: boolean }) {
                 jobActions(b.status, b.payment?.status).map((action) => (
                   <Confirm
                     key={action}
-                    title={`${action[0].toUpperCase() + action.slice(1)} job`}
+                    title={
+                      action === "accept"
+                        ? "Approve booking (Accept job)"
+                        : `${action[0].toUpperCase() + action.slice(1)} job`
+                    }
                     onConfirm={async () => {
                       const ids = {
                         accept: "E29",

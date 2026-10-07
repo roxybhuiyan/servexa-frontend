@@ -10,7 +10,8 @@ import {
   Filters,
   type Filter,
 } from "../components/ui";
-import type { PublicService } from "../api/types";
+import type { PublicService, PublicSlot } from "../api/types";
+import { useSession } from "../app/session";
 import { money, date } from "../lib/format";
 export const pageFilters: Filter[] = [
   { name: "limit", options: ["10", "20", "50", "100"] },
@@ -248,8 +249,9 @@ export function Slots({
   onChoose,
 }: {
   serviceId: string;
-  onChoose?: (id: string) => void;
+  onChoose?: (slot: PublicSlot) => void;
 }) {
+  const { user } = useSession();
   const [filter, setFilter] = useState<Record<string, unknown>>({ page: 1 });
   const slots = useApi("E18", serviceId, filter);
   return (
@@ -277,17 +279,22 @@ export function Slots({
                     {onChoose ? (
                       <button
                         disabled={Date.parse(slot.startTime) <= Date.now()}
-                        onClick={() => onChoose(slot.id)}
+                        onClick={() => onChoose(slot)}
                       >
                         Select this time
                       </button>
-                    ) : (
+                    ) : Date.parse(slot.startTime) <= Date.now() ? (
+                      <p>This time has passed.</p>
+                    ) : !user || user.role === "CUSTOMER" ? (
                       <Link
                         className="button"
                         to={`/customer/bookings/new?serviceId=${encodeURIComponent(serviceId)}&slotId=${encodeURIComponent(slot.id)}`}
+                        state={{ slot }}
                       >
                         Book this time →
                       </Link>
+                    ) : (
+                      <p>A customer account is required to book.</p>
                     )}
                   </Panel>
                 ))}
@@ -306,6 +313,7 @@ export function Slots({
   );
 }
 export function ServiceDetail() {
+  const { user, hydrating } = useSession();
   const { serviceId = "" } = useParams();
   const query = useApi("E13", serviceId);
   return (
@@ -329,6 +337,20 @@ export function ServiceDetail() {
               <p>
                 Final fees and total are provided when your booking is created.
               </p>
+              <div className="actions">
+                {hydrating ? (
+                  <p role="status">Checking your account…</p>
+                ) : !user || user.role === "CUSTOMER" ? (
+                  <Link
+                    className="button primary"
+                    to={`/customer/bookings/new?serviceId=${encodeURIComponent(v.id)}`}
+                  >
+                    {user ? "Book Service" : "Sign in to book"}
+                  </Link>
+                ) : (
+                  <p>Bookings require a customer account.</p>
+                )}
+              </div>
               <Link to={`/providers/${v.provider.id}`}>
                 {v.provider.businessName} ↗
               </Link>
