@@ -66,6 +66,7 @@ export function PaymentPanel({
                 alone does not confirm payment.
               </p>
             )}
+            {/* Offer Checkout only for an accepted, unpaid order without a recorded attempt. */}
             {booking.status === "ACCEPTED" &&
               state.bookingStatus === "ACCEPTED" &&
               state.payment.status === "UNPAID" &&
