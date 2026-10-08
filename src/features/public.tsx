@@ -10,7 +10,7 @@ import {
   Filters,
   type Filter,
 } from "../components/ui";
-import type { PublicService, PublicSlot } from "../api/types";
+import type { PublicService } from "../api/types";
 import { useSession } from "../app/session";
 import { money, date } from "../lib/format";
 export const pageFilters: Filter[] = [
@@ -83,8 +83,8 @@ export function Catalog({
               <em>Less searching.</em>
             </h1>
             <p>
-              Find a service that fits your day. Choose your provider, pick an
-              available time, and keep every booking in one place.
+              Find a service that fits your day. Choose your provider, place an
+              order, and keep every booking in one place.
             </p>
             <Link className="button primary" to="/services">
               Explore services ↗
@@ -176,8 +176,8 @@ export function Catalog({
           </div>
           <div>
             <small>02 / BOOK</small>
-            <h2>A time that works.</h2>
-            <p>Choose a slot and request your booking.</p>
+            <h2>Place your order.</h2>
+            <p>Send your order for provider approval.</p>
           </div>
           <div>
             <small>03 / FOLLOW THROUGH</small>
@@ -244,74 +244,6 @@ export function Reviews({
     </section>
   );
 }
-export function Slots({
-  serviceId,
-  onChoose,
-}: {
-  serviceId: string;
-  onChoose?: (slot: PublicSlot) => void;
-}) {
-  const { user } = useSession();
-  const [filter, setFilter] = useState<Record<string, unknown>>({ page: 1 });
-  const slots = useApi("E18", serviceId, filter);
-  return (
-    <section>
-      <h2>Available times</h2>
-      <p>Times shown in {Intl.DateTimeFormat().resolvedOptions().timeZone}.</p>
-      <Filters
-        fields={[
-          { name: "from", type: "datetime-local" },
-          { name: "to", type: "datetime-local" },
-          { name: "limit", options: ["10", "20", "50"] },
-        ]}
-        value={filter}
-        onChange={setFilter}
-      />
-      <Remote query={slots}>
-        {(v) => (
-          <>
-            {v.data.length ? (
-              <div className="slot-grid">
-                {v.data.map((slot) => (
-                  <Panel key={slot.id}>
-                    <strong>{date(slot.startTime)}</strong>
-                    <p>Until {date(slot.endTime)}</p>
-                    {onChoose ? (
-                      <button
-                        disabled={Date.parse(slot.startTime) <= Date.now()}
-                        onClick={() => onChoose(slot)}
-                      >
-                        Select this time
-                      </button>
-                    ) : Date.parse(slot.startTime) <= Date.now() ? (
-                      <p>This time has passed.</p>
-                    ) : !user || user.role === "CUSTOMER" ? (
-                      <Link
-                        className="button"
-                        to={`/customer/bookings/new?serviceId=${encodeURIComponent(serviceId)}&slotId=${encodeURIComponent(slot.id)}`}
-                        state={{ slot }}
-                      >
-                        Book this time →
-                      </Link>
-                    ) : (
-                      <p>A customer account is required to book.</p>
-                    )}
-                  </Panel>
-                ))}
-              </div>
-            ) : (
-              <Empty>No available times in this range.</Empty>
-            )}
-            <Pagination
-              meta={v.meta}
-              onPage={(page) => setFilter({ ...filter, page })}
-            />
-          </>
-        )}
-      </Remote>
-    </section>
-  );
-}
 export function ServiceDetail() {
   const { user, hydrating } = useSession();
   const { serviceId = "" } = useParams();
@@ -345,7 +277,7 @@ export function ServiceDetail() {
                     className="button primary"
                     to={`/customer/bookings/new?serviceId=${encodeURIComponent(v.id)}`}
                   >
-                    {user ? "Book Service" : "Sign in to book"}
+                    {user ? "Order Now" : "Sign in to order"}
                   </Link>
                 ) : (
                   <p>Bookings require a customer account.</p>
@@ -362,7 +294,6 @@ export function ServiceDetail() {
               </small>
             </Panel>
           </div>
-          <Slots serviceId={v.id} />
           <Reviews scope="service" id={v.id} />
         </>
       )}

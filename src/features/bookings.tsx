@@ -22,12 +22,10 @@ import {
 import { api } from "../api/services";
 import { queryClient, useSession } from "../app/session";
 import { date, money, canCancel, jobActions } from "../lib/format";
-import { Slots, pageFilters } from "./public";
+import { pageFilters } from "./public";
 import { PaymentPanel } from "./payments";
 import { ReviewCreate } from "./reviews";
-import { ApiError } from "../api/client";
 import * as schemas from "../contracts/forms";
-import type { PublicSlot } from "../api/types";
 export const bookingStatuses = [
   "PENDING",
   "ACCEPTED",
@@ -39,7 +37,7 @@ export const bookingStatuses = [
 ];
 export async function refreshBooking() {
   await Promise.all(
-    ["E24", "E25", "E27", "E28", "E18", "E19", "E34"].map((id) =>
+    ["E24", "E25", "E27", "E28", "E34"].map((id) =>
       queryClient.invalidateQueries({ queryKey: [id] }),
     ),
   );
@@ -104,15 +102,14 @@ export function BookingList({
                         {b.service.title}
                       </Link>
                     </h2>
-                    <p>
-                      {date(b.slot.startTime)} – {date(b.slot.endTime)}
-                    </p>
+                    <p>Ordered {date(b.createdAt)}</p>
                     {provider && "customer" in b && (
                       <p>
                         Customer: {b.customer.name} · {b.customer.phone}
                       </p>
                     )}
                     <p>{b.provider.businessName}</p>
+                    <p className="id">Booking {b.id}</p>
                     {b.notes && <p>{b.notes}</p>}
                     <strong>{money(b.totalAmount)}</strong>
                     <p>Payment: {b.payment?.status || "UNPAID"}</p>
@@ -138,20 +135,13 @@ export function BookingList({
   );
 }
 export function NewBooking() {
-  const location = useLocation();
-  const [selectedSlot, setSelectedSlot] = useState<PublicSlot | null>(
-    location.state?.slot ?? null,
-  );
-  const [conflict, setConflict] = useState<string | null>(null);
-  const [params, setParams] = useSearchParams();
-  const serviceId = params.get("serviceId") || "",
-    slotId = params.get("slotId") || "";
+  const [params] = useSearchParams();
+  const serviceId = params.get("serviceId") || "";
   const q = useApi("E13", serviceId, undefined, !!serviceId);
   const navigate = useNavigate();
   return (
     <>
-      <Title title="Request your booking" />
-      {conflict && <ErrorBox error={new Error(conflict)} />}
+      <Title title="Confirm Your Order" />
       {!serviceId ? (
         <Empty>
           <Link to="/services">Choose a service first →</Link>
@@ -159,87 +149,37 @@ export function NewBooking() {
       ) : (
         <Remote query={q}>
           {(service) => (
-            <>
-              <Panel>
-                <h2>{service.title}</h2>
-                <p>
-                  Service price: {money(service.price)}. The server will provide
-                  the final total after booking.
-                </p>
-              </Panel>
-              <Slots
-                serviceId={serviceId}
-                onChoose={(slot) => {
-                  setConflict(null);
-                  setSelectedSlot(slot);
-                  setParams({ serviceId, slotId: slot.id });
+            <Panel>
+              <h2>{service.title}</h2>
+              <p>
+                Service price: {money(service.price)}. The server will provide
+                the final total after ordering.
+              </p>
+              <p>Payment is available after provider approval.</p>
+              <Form
+                key={serviceId}
+                schema={schemas.booking}
+                initial={{ serviceId }}
+                fields={[
+                  { name: "serviceId", hidden: true },
+                  {
+                    name: "notes",
+                    type: "textarea",
+                    help: "Optional notes, up to 2,000 characters.",
+                  },
+                ]}
+                submit="Place Order"
+                onSubmit={async (data) => {
+                  const booking = await api("E23", {
+                    body: schemas.booking.parse(data),
+                  });
+                  await refreshBooking();
+                  navigate(`/customer/bookings/${booking.id}`, {
+                    state: { createdBookingId: booking.id },
+                  });
                 }}
               />
-              {!slotId && (
-                <p role="status">
-                  Select an available time above to continue. If no times are
-                  listed, this service cannot currently be booked.
-                </p>
-              )}
-              {slotId && (
-                <Panel>
-                  <h2>Selected time</h2>
-                  {selectedSlot?.id === slotId &&
-                    selectedSlot.serviceId === serviceId && (
-                      <p>
-                        {date(selectedSlot.startTime)} –{" "}
-                        {date(selectedSlot.endTime)}
-                      </p>
-                    )}
-                  <p className="id">Slot reference: {slotId}</p>
-                  <Form
-                    key={slotId}
-                    schema={schemas.booking}
-                    initial={{ serviceId, slotId }}
-                    fields={[
-                      { name: "serviceId", hidden: true },
-                      { name: "slotId", hidden: true },
-                      {
-                        name: "notes",
-                        type: "textarea",
-                        help: "Optional notes, up to 2,000 characters.",
-                      },
-                    ]}
-                    submit="Request booking"
-                    onSubmit={async (data) => {
-                      try {
-                        const b = await api("E23", {
-                          body: data as schemas.CreateBooking,
-                        });
-                        await refreshBooking();
-                        navigate(`/customer/bookings/${b.id}`, {
-                          state: { createdBookingId: b.id },
-                        });
-                      } catch (e) {
-                        if (
-                          e instanceof ApiError &&
-                          [404, 409].includes(e.status)
-                        ) {
-                          await queryClient.invalidateQueries({
-                            queryKey: ["E18"],
-                          });
-                          setParams({ serviceId });
-                          setSelectedSlot(null);
-                          setConflict(
-                            "This time cannot be booked. Released slots may retain an earlier booking. Choose another time.",
-                          );
-                          throw new ApiError(
-                            409,
-                            "This time cannot be booked. Released slots may still have an earlier booking. Please choose another time.",
-                          );
-                        }
-                        throw e;
-                      }
-                    }}
-                  />
-                </Panel>
-              )}
-            </>
+            </Panel>
           )}
         </Remote>
       )}
@@ -263,33 +203,31 @@ export function BookingDetail({ provider = false }: { provider?: boolean }) {
           <>
             {!provider && location.state?.createdBookingId === b.id && (
               <Panel>
-                <p role="status">Booking request created successfully.</p>
-                <p>
-                  Your current status is {b.status}. Provider approval is
-                  required before payment.
-                </p>
+                <p role="status">Order placed successfully.</p>
+                <p>Current booking status: {b.status}.</p>
                 <Link to="/customer/bookings">View all your bookings →</Link>
               </Panel>
             )}
             {!provider && b.status === "PENDING" && (
-              <p>Waiting for the provider to approve or reject your request.</p>
+              <p>Waiting for provider approval.</p>
             )}
             {!provider && b.status === "ACCEPTED" && (
               <p>
-                The provider approved your request (ACCEPTED). Continue with the
-                existing Checkout below.
+                The provider approved your order (ACCEPTED). Payment is
+                available using Pay Now below.
               </p>
             )}
             {!provider && b.status === "REJECTED" && (
               <p>The provider rejected this booking request.</p>
             )}
+            {!provider && b.status === "CANCELLED" && (
+              <p>This booking has been cancelled.</p>
+            )}
             <div className="detail-grid">
               <Panel>
                 <Status value={b.status} />
                 <h2>{b.service.title}</h2>
-                <p>
-                  {date(b.slot.startTime)} – {date(b.slot.endTime)}
-                </p>
+                <p>Ordered {date(b.createdAt)}</p>
                 <p>{b.notes || "No booking notes."}</p>
                 <p>
                   Provider: {b.provider.businessName} · {b.provider.phone}
@@ -335,8 +273,10 @@ export function BookingDetail({ provider = false }: { provider?: boolean }) {
                     key={action}
                     title={
                       action === "accept"
-                        ? "Approve booking (Accept job)"
-                        : `${action[0].toUpperCase() + action.slice(1)} job`
+                        ? "Accept Order"
+                        : action === "reject"
+                          ? "Reject Order"
+                          : `${action[0].toUpperCase() + action.slice(1)} job`
                     }
                     onConfirm={async () => {
                       const ids = {

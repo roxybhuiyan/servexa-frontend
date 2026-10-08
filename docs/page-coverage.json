@@ -64,7 +64,7 @@
   },
   {
     "id": "UI10",
-    "path": "/customer/bookings/new?serviceId=...&slotId=...",
+    "path": "/customer/bookings/new?serviceId=...",
     "role": "CUSTOMER",
     "implementation": "src/features/bookings.tsx",
     "status": "implemented"

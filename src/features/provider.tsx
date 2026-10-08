@@ -18,7 +18,7 @@ import { api } from "../api/services";
 import { queryClient, useSession } from "../app/session";
 import * as schemas from "../contracts/forms";
 import type { OwnService } from "../api/types";
-import { money, date, localDate } from "../lib/format";
+import { money } from "../lib/format";
 import { BookingList } from "./bookings";
 import { Reviews, pageFilters } from "./public";
 export function Approval({ children }: { children: ReactNode }) {
@@ -57,20 +57,17 @@ export function ProviderDashboard() {
           />
           <Panel>
             <Status value={v.status} />
-            <p>Manage your services, available times, and upcoming work.</p>
+            <p>Manage your services and customer orders.</p>
             <div className="actions">
               <Link to="/provider/profile">Edit profile →</Link>
               <Link to="/provider/services">Manage services →</Link>
-              <Link to="/provider/availability">Manage availability →</Link>
+              <Link to="/provider/bookings">Manage orders →</Link>
             </div>
           </Panel>
           {v.status === "APPROVED" ? (
             <BookingList provider dashboard />
           ) : (
-            <p>
-              Approval is required to create services, change availability, and
-              manage jobs.
-            </p>
+            <p>Approval is required to create services and manage jobs.</p>
           )}
         </>
       )}
@@ -173,6 +170,7 @@ export function ProviderServices() {
                   <Panel key={s.id}>
                     <Status value={s.status} />
                     <h2>{s.title}</h2>
+                    <p>Category: {s.category.name}</p>
                     <p>
                       {money(s.price)} · Duration {s.duration}
                     </p>
@@ -218,6 +216,7 @@ export function ServiceEditor() {
   const { user } = useSession();
   const navigate = useNavigate();
   const categories = useApi("E11");
+  const [created, setCreated] = useState<OwnService | null>(null);
   const [scanPage, setScanPage] = useState(1),
     [found, setFound] = useState<OwnService | undefined>();
   const q = useQuery({
@@ -291,9 +290,14 @@ export function ServiceEditor() {
                   id: serviceId,
                   body: data as schemas.PatchService,
                 });
-              else await api("E15", { body: data as schemas.CreateService });
+              else {
+                const result = await api("E15", {
+                  body: data as schemas.CreateService,
+                });
+                setCreated(result);
+              }
               await queryClient.invalidateQueries({ queryKey: ["E14"] });
-              navigate("/provider/services");
+              if (serviceId) navigate("/provider/services");
             }}
           />
         </Panel>
@@ -303,7 +307,22 @@ export function ServiceEditor() {
   return (
     <>
       <Title title={serviceId ? "Edit service" : "Create service"} />
-      {!serviceId ? (
+      {created ? (
+        <Panel>
+          <h2 role="status">Service created successfully</h2>
+          <p>{created.title}</p>
+          <p>
+            {created.status === "ACTIVE"
+              ? "Your service is published. Customers can now place orders."
+              : "Your service was saved as inactive. Activate it when you are ready to receive orders."}
+          </p>
+          <p>
+            <Link className="button" to="/provider/services">
+              Back to Services
+            </Link>
+          </p>
+        </Panel>
+      ) : !serviceId ? (
         <Approval>{form()}</Approval>
       ) : service ? (
         form(service)
@@ -331,181 +350,6 @@ export function ServiceEditor() {
           )}
         </Remote>
       )}
-    </>
-  );
-}
-export function Availability() {
-  const [filter, setFilter] = useState<Record<string, unknown>>({ page: 1 }),
-    [editing, setEditing] = useState<string | null>(null);
-  const [servicePage, setServicePage] = useState(1);
-  const profile = useApi("E08"),
-    q = useApi("E19", undefined, filter),
-    services = useApi("E14", undefined, {
-      page: servicePage,
-      limit: 100,
-      status: "ACTIVE",
-    });
-  const approved = profile.data?.status === "APPROVED";
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ["E19"] });
-  const serviceOptions =
-    services.data?.data.map((v) => ({ value: v.id, label: v.title })) || [];
-  return (
-    <>
-      <Title title="Your availability" />
-      <p>
-        Times are entered in {Intl.DateTimeFormat().resolvedOptions().timeZone}{" "}
-        and sent with a timezone offset.
-      </p>
-      <Remote query={profile}>{(v) => <Status value={v.status} />}</Remote>
-      {approved && (
-        <Panel>
-          <h2>Create a time slot</h2>
-          <Remote query={services}>
-            {(v) => (
-              <>
-                {v.data.length ? (
-                  <Form
-                    schema={schemas.slot}
-                    fields={[
-                      {
-                        name: "serviceId",
-                        label: "Active service",
-                        required: true,
-                        options: serviceOptions,
-                      },
-                      {
-                        name: "startTime",
-                        type: "datetime-local",
-                        required: true,
-                      },
-                      {
-                        name: "endTime",
-                        type: "datetime-local",
-                        required: true,
-                      },
-                    ]}
-                    submit="Create slot"
-                    onSubmit={async (data) => {
-                      try {
-                        await api("E20", { body: data as schemas.CreateSlot });
-                      } finally {
-                        await invalidate();
-                      }
-                    }}
-                  />
-                ) : (
-                  <Empty>Create an active service first.</Empty>
-                )}
-                <Pagination meta={v.meta} onPage={setServicePage} />
-              </>
-            )}
-          </Remote>
-        </Panel>
-      )}
-      <Filters
-        fields={[
-          { name: "serviceId" },
-          { name: "from", type: "datetime-local" },
-          { name: "to", type: "datetime-local" },
-          { name: "isBooked", options: ["true", "false"] },
-          ...pageFilters,
-        ]}
-        value={filter}
-        onChange={setFilter}
-      />
-      <Remote query={q}>
-        {(v) => (
-          <>
-            {v.data.length ? (
-              v.data.map((slot) => (
-                <Panel key={slot.id}>
-                  <h2>{slot.service.title}</h2>
-                  <p>
-                    {date(slot.startTime)} → {date(slot.endTime)}
-                  </p>
-                  <Status value={slot.isBooked ? "BOOKED" : "AVAILABLE"} />
-                  {approved && !slot.isBooked && (
-                    <div className="actions">
-                      <button
-                        onClick={() =>
-                          setEditing(editing === slot.id ? null : slot.id)
-                        }
-                      >
-                        Edit time
-                      </button>
-                      <Confirm
-                        title="Delete slot"
-                        onConfirm={async () => {
-                          try {
-                            await api("E22", { id: slot.id });
-                          } finally {
-                            await invalidate();
-                          }
-                        }}
-                      >
-                        <p>
-                          A slot with an earlier booking may still be
-                          undeletable even when shown as available.
-                        </p>
-                      </Confirm>
-                    </div>
-                  )}
-                  {editing === slot.id && approved && (
-                    <Form
-                      schema={schemas.slot}
-                      initial={{
-                        serviceId: slot.serviceId,
-                        startTime: localDate(slot.startTime),
-                        endTime: localDate(slot.endTime),
-                      }}
-                      fields={[
-                        {
-                          name: "serviceId",
-                          label: "Active service",
-                          required: true,
-                          options: [
-                            {
-                              value: slot.serviceId,
-                              label: slot.service.title,
-                            },
-                            ...serviceOptions.filter(
-                              (v) => v.value !== slot.serviceId,
-                            ),
-                          ],
-                        },
-                        {
-                          name: "startTime",
-                          type: "datetime-local",
-                          required: true,
-                        },
-                        {
-                          name: "endTime",
-                          type: "datetime-local",
-                          required: true,
-                        },
-                      ]}
-                      onSubmit={async (data) => {
-                        try {
-                          await api("E21", { id: slot.id, body: data });
-                          setEditing(null);
-                        } finally {
-                          await invalidate();
-                        }
-                      }}
-                    />
-                  )}
-                </Panel>
-              ))
-            ) : (
-              <Empty>No slots match these filters.</Empty>
-            )}
-            <Pagination
-              meta={v.meta}
-              onPage={(page) => setFilter({ ...filter, page })}
-            />
-          </>
-        )}
-      </Remote>
     </>
   );
 }

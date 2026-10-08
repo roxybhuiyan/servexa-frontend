@@ -164,12 +164,6 @@ export type CustomerBooking = {
     imageUrl: string | null;
   };
   provider: { id: ID; businessName: string; city: string; phone: string };
-  slot: {
-    id: ID;
-    startTime: DateString;
-    endTime: DateString;
-    isBooked: boolean;
-  };
   payment: {
     status: PaymentStatus;
     amount: DecimalString;

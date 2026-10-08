@@ -1,3 +1,5 @@
+> Historical coverage snapshot. Service ordering now uses serviceId and optional notes only. Availability UI is retired; the legacy route redirects to Services. Current verification is recorded by the test suites.
+
 # Servexa coverage audit
 
 Coverage means a connected browser implementation or an explicit non-browser exception. Deterministic HTTP tests are separate from live backend verification.

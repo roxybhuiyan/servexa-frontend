@@ -78,7 +78,6 @@ export const slot = z
 export const booking = z
   .object({
     serviceId: z.string().trim().min(1),
-    slotId: z.string().trim().min(1),
     notes: text(0, 2000).optional(),
   })
   .strict();

@@ -191,55 +191,55 @@
     "method": "GET",
     "path": "/services/:serviceId/availability",
     "role": "Public",
-    "page": "Service details / Booking",
-    "feature": "Available slots",
+    "page": "None",
+    "feature": "Legacy availability API",
     "implementation": "src/features/public.tsx",
-    "status": "implemented",
-    "note": "Typed adapter and connected UI/session action"
+    "status": "legacy-unused",
+    "note": "Retained backend API; no application workflow depends on availability."
   },
   {
     "id": "E19",
     "method": "GET",
     "path": "/providers/me/availability",
     "role": "PROVIDER",
-    "page": "Provider availability",
-    "feature": "Own slots",
+    "page": "None",
+    "feature": "Legacy availability API",
     "implementation": "src/features/provider.tsx",
-    "status": "implemented",
-    "note": "Typed adapter and connected UI/session action"
+    "status": "legacy-unused",
+    "note": "Retained backend API; no application workflow depends on availability."
   },
   {
     "id": "E20",
     "method": "POST",
     "path": "/providers/me/availability",
     "role": "PROVIDER",
-    "page": "Provider availability",
-    "feature": "Create slot",
+    "page": "None",
+    "feature": "Legacy availability API",
     "implementation": "src/features/provider.tsx",
-    "status": "implemented",
-    "note": "Typed adapter and connected UI/session action"
+    "status": "legacy-unused",
+    "note": "Retained backend API; no application workflow depends on availability."
   },
   {
     "id": "E21",
     "method": "PATCH",
     "path": "/providers/me/availability/:id",
     "role": "PROVIDER",
-    "page": "Provider availability",
-    "feature": "Edit slot",
+    "page": "None",
+    "feature": "Legacy availability API",
     "implementation": "src/features/provider.tsx",
-    "status": "implemented",
-    "note": "Typed adapter and connected UI/session action"
+    "status": "legacy-unused",
+    "note": "Retained backend API; no application workflow depends on availability."
   },
   {
     "id": "E22",
     "method": "DELETE",
     "path": "/providers/me/availability/:id",
     "role": "PROVIDER",
-    "page": "Provider availability",
-    "feature": "Delete slot",
+    "page": "None",
+    "feature": "Legacy availability API",
     "implementation": "src/features/provider.tsx",
-    "status": "implemented",
-    "note": "Typed adapter and connected UI/session action"
+    "status": "legacy-unused",
+    "note": "Retained backend API; no application workflow depends on availability."
   },
   {
     "id": "E23",

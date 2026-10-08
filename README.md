@@ -42,7 +42,7 @@ All 31 specified screens are routed. All 66 backend endpoints and 73 Postman exa
 
 - Public: category/catalog search, exact supported filters, pagination, service/provider details, fixed slots, public reviews, live summaries.
 - Customer: registration, login, profile, dashboard/history, booking requests/details/cancellation, hosted Checkout, review creation/edit/deletion.
-- Provider: approval visibility, profile, existing service editing even before approval, approved-only creation/availability mutations/jobs, accept/reject/start/complete, public feedback.
+- Provider: approval visibility, profile, existing service editing even before approval, approved-only service creation/jobs, accept/reject/start/complete, public feedback.
 - Admin: six dashboard API panels, users/status/deletion, provider approval, category CRUD, review moderation, read-only audit list/details and safe JSON.
 
 ## Authentication and cache isolation
@@ -86,3 +86,10 @@ The tests exercise browser journeys against deterministic HTTP responses, not th
 
 Visual foundation: [Servexa canvas](https://superdesign.dev/teams/59271053-73b6-42f0-bda9-accc5e13266a/projects/0913c583-d0f7-4854-8ce6-166df55bf1ac). `.superdesign/` contains an unbundled visual reference; its example layout content is not an application data source.
 # servexa-frontend
+
+
+Service orders use `POST /bookings` with `{ serviceId, notes? }`. Availability UI
+is retired and its old workspace URL redirects to Services. Order dates display
+creation timestamps, not appointment times. Payment remains acceptance-gated.
+Apply the backend's optional-legacy-slot migration before using the new flow.
+The configured hosted database has not been migrated automatically.

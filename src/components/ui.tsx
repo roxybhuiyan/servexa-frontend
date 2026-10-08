@@ -15,7 +15,15 @@ export function useApi<E extends Endpoint>(
   enabled = true,
 ) {
   const { user } = useSession();
-  const liveBooking = ["E24", "E25", "E27", "E28", "E34"].includes(endpoint);
+  const liveBooking = [
+    "E18",
+    "E19",
+    "E24",
+    "E25",
+    "E27",
+    "E28",
+    "E34",
+  ].includes(endpoint);
   return useQuery({
     queryKey: [endpoint, user?.id || "public", id || "", query || {}],
     queryFn: ({ signal }) => api(endpoint, { id, query, signal }),
@@ -165,6 +173,7 @@ export function Form({
   initial = {},
   onSubmit,
   submit = "Save changes",
+  submitDisabled = false,
   patch = false,
 }: {
   fields: Field[];
@@ -172,6 +181,7 @@ export function Form({
   initial?: Record<string, unknown>;
   onSubmit: (data: Record<string, unknown>) => Promise<unknown>;
   submit?: string;
+  submitDisabled?: boolean;
   patch?: boolean;
 }) {
   const formId = useId();
@@ -188,6 +198,7 @@ export function Form({
       className={s.form}
       noValidate
       onSubmit={handleSubmit(async (values) => {
+        if (submitDisabled) return;
         setFailure(null);
         setSaved(false);
         const data: Record<string, unknown> = {};
@@ -279,7 +290,7 @@ export function Form({
       {errors.root && <p role="alert">{String(errors.root.message)}</p>}
       <ErrorBox error={failure} />
       {saved && <p role="status">Saved successfully.</p>}
-      <button className="primary" disabled={isSubmitting}>
+      <button className="primary" disabled={isSubmitting || submitDisabled}>
         {isSubmitting ? "Saving…" : submit}
       </button>
     </form>

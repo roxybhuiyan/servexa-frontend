@@ -63,7 +63,6 @@ const baseBooking = {
   completedAt: null,
   service,
   provider: { ...profile },
-  slot,
   payment: null,
   customer: { id: "u1", name: "Casey", phone: "12345678" },
 };
@@ -91,6 +90,7 @@ async function setup(
   let booking = { ...baseBooking, status: options.bookingStatus || "PENDING" };
   let approval = options.approval || "APPROVED";
   let paid = false;
+  let published = false;
   const user = {
     id: "u1",
     name: "Casey",
@@ -134,6 +134,9 @@ async function setup(
     else if (path === "/providers/me/bookings/book1/accept") {
       booking = { ...booking, status: "ACCEPTED" };
       data = booking;
+    } else if (path === "/providers/me/bookings/book1/reject") {
+      booking = { ...booking, status: "REJECTED" };
+      data = booking;
     } else if (path === "/providers/me")
       data = { ...profile, status: approval, user };
     else if (path === "/providers/me/services")
@@ -148,9 +151,23 @@ async function setup(
               },
             ])
           : { ...service, ...body };
-    else if (path === "/providers/me/availability")
-      data = method === "GET" ? pageData([]) : { ...slot, ...body };
-    else if (path === "/payments/initiate/book1")
+    else if (path === "/providers/me/availability") {
+      if (method === "POST") published = true;
+      data =
+        method === "GET"
+          ? pageData(
+              published
+                ? [
+                    {
+                      ...slot,
+                      service: { id: service.id, title: service.title },
+                      isBooked: false,
+                    },
+                  ]
+                : [],
+            )
+          : { ...slot, ...body };
+    } else if (path === "/payments/initiate/book1")
       data = {
         paymentUrl: "https://checkout.stripe.com/c/pay/test",
         sessionId: "test-session",
@@ -225,21 +242,16 @@ test("customer registration, login, catalog and booking request", async ({
   await login(page);
   await page.getByRole("link", { name: "Find a service" }).click();
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
-  await page.getByRole("link", { name: "Book this time" }).click();
-  await page
-    .getByRole("button", { name: "Request booking", exact: true })
-    .click();
+  await page.getByRole("link", { name: "Order Now" }).click();
+  await page.getByRole("button", { name: "Place Order", exact: true }).click();
   await expect(page).toHaveURL(/customer\/bookings\/book1/);
   expect(
     calls.find((c) => c.path === "/bookings" && c.method === "POST")?.body,
-  ).toEqual({ serviceId: "svc1", slotId: "slot1" });
-  await expect(
-    page.getByRole("button", { name: /secure Checkout/ }),
-  ).toHaveCount(0);
+  ).toEqual({ serviceId: "svc1" });
+  expect(calls.some((c) => c.path.includes("availability"))).toBe(false);
+  await expect(page.getByRole("button", { name: /Pay Now/ })).toHaveCount(0);
 });
-test("provider creates service and slot, then accepts a job", async ({
-  page,
-}) => {
+test("provider publishes a service and accepts an order", async ({ page }) => {
   const { calls } = await setup(page, "PROVIDER");
   await page.setViewportSize({ width: 390, height: 844 });
   await login(page);
@@ -255,18 +267,22 @@ test("provider creates service and slot, then accepts a job", async ({
   await page.getByLabel("Price *", { exact: true }).fill("120.00");
   await page.getByLabel("Duration *", { exact: true }).fill("60");
   await page.getByRole("button", { name: "Save changes" }).click();
-  await expect(page).toHaveURL(/provider\/services$/);
-  await page.getByRole("link", { name: "Availability", exact: true }).click();
-  await page.getByLabel("Active service", { exact: true }).selectOption("svc1");
+  await expect(page.getByText("Service created successfully")).toBeVisible();
+  await expect(
+    page.getByText(
+      "Your service is published. Customers can now place orders.",
+    ),
+  ).toBeVisible();
   await page
-    .getByLabel("Start Time *", { exact: true })
-    .fill("2027-10-10T10:00");
-  await page.getByLabel("End Time *", { exact: true }).fill("2027-10-10T11:00");
-  await page.getByRole("button", { name: "Create slot" }).click();
-  await expect(page.getByText("Saved successfully.")).toBeVisible();
+    .getByRole("link", { name: "Back to Services", exact: true })
+    .click();
+  await expect(
+    page.getByRole("link", { name: "Availability", exact: true }),
+  ).toHaveCount(0);
+  expect(calls.some((c) => c.path.includes("availability"))).toBe(false);
   await page.getByRole("link", { name: "Jobs", exact: true }).click();
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
-  await page.getByRole("button", { name: "Accept job" }).click();
+  await page.getByRole("button", { name: "Accept Order" }).click();
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
   await expect(
     page.getByText("ACCEPTED", { exact: false }).first(),
@@ -315,9 +331,7 @@ test("hosted Checkout remembers context and reconciles authoritative return", as
   );
   await login(page);
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Continue to secure Checkout" })
-    .click();
+  await page.getByRole("button", { name: "Pay Now" }).click();
   await expect(page).toHaveURL(/checkout.stripe.com/);
   state.setPaid();
   await page.goto("/payments/success?session_id=untrusted-query");
@@ -389,27 +403,31 @@ test("responsive public layout, empty and error states", async ({ page }) => {
   await expect(page.getByRole("alert")).toBeVisible();
 });
 
-test("slot conflict clears selection and keeps a visible explanation", async ({
+test("order conflict shows an error without retrying creation", async ({
   page,
 }) => {
   await setup(page);
   await page.route("**/api/v1/bookings", (route) =>
     route.fulfill({
-      status: 409,
-      json: { success: false, message: "Slot conflict", errors: [] },
+      status: 404,
+      json: {
+        success: false,
+        message: "Service is no longer active",
+        errors: [],
+      },
     }),
   );
   await login(page);
   await page.getByRole("link", { name: "Find a service" }).click();
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
-  await page.getByRole("link", { name: "Book this time" }).click();
-  await page
-    .getByRole("button", { name: "Request booking", exact: true })
-    .click();
-  await expect(page.getByRole("alert")).toContainText("Choose another time");
+  await page.getByRole("link", { name: "Order Now" }).click();
+  await page.getByRole("button", { name: "Place Order", exact: true }).click();
+  await expect(page.getByRole("alert")).toContainText(
+    "Service is no longer active",
+  );
   await expect(
-    page.getByRole("button", { name: "Request booking", exact: true }),
-  ).toHaveCount(0);
+    page.getByRole("button", { name: "Place Order", exact: true }),
+  ).toBeEnabled();
 });
 test("cancel return does not claim payment or booking cancellation", async ({
   page,
@@ -488,4 +506,57 @@ test("completed booking maps existing review by booking ID before offering creat
   await expect(
     page.getByRole("button", { name: "Publish review" }),
   ).toHaveCount(0);
+});
+
+test("customer orders without availability and validates notes", async ({
+  page,
+}) => {
+  const { calls } = await setup(page);
+  await login(page);
+  await page.getByRole("link", { name: "Find a service" }).click();
+  await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
+  await page.getByRole("link", { name: "Order Now", exact: true }).click();
+  const order = page.getByRole("button", { name: "Place Order", exact: true });
+  await expect(order).toBeVisible();
+  await expect(page.getByRole("button", { name: "Apply filters" })).toHaveCount(
+    0,
+  );
+  await expect(order).toBeEnabled();
+  await page.getByLabel("Notes", { exact: true }).fill("x".repeat(2001));
+  await order.click();
+  expect(
+    calls.filter((c) => c.path === "/bookings" && c.method === "POST"),
+  ).toHaveLength(0);
+  await page
+    .getByLabel("Notes", { exact: true })
+    .fill("Please ring the doorbell.");
+  await order.click();
+  await expect(page.getByText("Order placed successfully.")).toBeVisible();
+  await expect(page.getByText("Waiting for provider approval.")).toBeVisible();
+});
+
+for (const status of ["REJECTED", "CANCELLED"])
+  test(`${status} order never offers payment`, async ({ page }) => {
+    await setup(page, "CUSTOMER", { bookingStatus: status });
+    await login(page);
+    await page
+      .getByRole("link", { name: "Home cleaning", exact: true })
+      .click();
+    await expect(page.getByText(status, { exact: true }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /Pay Now/ })).toHaveCount(0);
+  });
+
+test("provider rejects a pending order and refreshes server status", async ({
+  page,
+}) => {
+  const { calls } = await setup(page, "PROVIDER");
+  await login(page);
+  await page.getByRole("link", { name: "Jobs", exact: true }).click();
+  await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
+  await page.getByRole("button", { name: "Reject Order", exact: true }).click();
+  await page.getByRole("button", { name: "Confirm", exact: true }).click();
+  await expect(page.getByText("REJECTED", { exact: true })).toBeVisible();
+  expect(
+    calls.some((c) => c.path.endsWith("/reject") && c.method === "PATCH"),
+  ).toBe(true);
 });

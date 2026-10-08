@@ -118,9 +118,7 @@ export function PaymentPanel({
                     }
                   }}
                 >
-                  {pending
-                    ? "Opening Checkout…"
-                    : "Continue to secure Checkout ↗"}
+                  {pending ? "Opening Checkout…" : "Pay Now ↗"}
                 </button>
               )}
             {(state.payment.status === "PENDING" ||

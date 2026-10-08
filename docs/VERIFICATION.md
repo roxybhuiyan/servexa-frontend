@@ -1,3 +1,5 @@
+> Historical coverage snapshot. Service ordering now uses serviceId and optional notes only. Availability UI is retired; the legacy route redirects to Services. Current verification is recorded by the test suites.
+
 # Verification report — 2026-10-05
 
 Implemented only inside `servexa-frontend/`.

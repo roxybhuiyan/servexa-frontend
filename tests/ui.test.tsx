@@ -126,6 +126,10 @@ describe("forms and workflow", () => {
   });
   it("uses customer/provider-only registration and strict mutation fields", () => {
     expect(schemas.register.safeParse({ role: "ADMIN" }).success).toBe(false);
+    expect(schemas.booking.safeParse({ serviceId: "s" }).success).toBe(true);
+    expect(
+      schemas.booking.safeParse({ serviceId: "s", slotId: "old" }).success,
+    ).toBe(false);
     expect(
       schemas.booking.safeParse({ serviceId: "s", slotId: "t", totalAmount: 1 })
         .success,

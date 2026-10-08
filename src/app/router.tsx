@@ -21,7 +21,6 @@ import {
   ProviderProfile,
   ProviderServices,
   ServiceEditor,
-  Availability,
   ProviderReviews,
 } from "../features/provider";
 const AdminDashboard = lazy(() =>
@@ -80,7 +79,6 @@ const links = {
     ["/provider", "Overview"],
     ["/provider/profile", "Business profile"],
     ["/provider/services", "Services"],
-    ["/provider/availability", "Availability"],
     ["/provider/bookings", "Jobs"],
     ["/provider/reviews", "Reviews"],
     ["/account/profile", "Account"],
@@ -229,7 +227,10 @@ export const router = createBrowserRouter([
             path: "/provider/services/:serviceId/edit",
             element: <ServiceEditor />,
           },
-          { path: "/provider/availability", element: <Availability /> },
+          {
+            path: "/provider/availability",
+            element: <Navigate to="/provider/services" replace />,
+          },
           {
             path: "/provider/bookings",
             element: (

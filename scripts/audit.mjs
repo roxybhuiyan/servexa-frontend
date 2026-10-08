@@ -30,7 +30,7 @@ for (const e of endpoints) {
       fs.existsSync(new URL("../" + e.implementation, import.meta.url)),
       `Missing implementation ${e.id}`,
     );
-  } else assert(["E35", "E64", "E65", "E66"].includes(e.id));
+  } else assert(["E18", "E19", "E20", "E21", "E22", "E35", "E64", "E65", "E66"].includes(e.id));
 }
 for (const p of postman) assert(endpoints.some((e) => e.id === p.e));
 for (const p of pages)
@@ -43,7 +43,7 @@ assert(!adapter.includes("stripe/webhook"));
 assert(!source.includes("sk_test_"));
 assert(!source.includes("sk_live_"));
 console.log(
-  "Coverage verified: 66 routes (62 browser, 4 exceptions), 73 Postman examples, 31 screens.",
+  "Coverage verified: 66 routes (57 browser, 5 legacy availability APIs, 4 exceptions), 73 Postman examples, 31 route entries.",
 );
 
 // Optional direct comparison when the sibling backend is present. Never reads
