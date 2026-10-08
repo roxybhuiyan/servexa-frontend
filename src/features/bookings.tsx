@@ -174,6 +174,7 @@ export function NewBooking() {
                     body: schemas.booking.parse(data),
                   });
                   await refreshBooking();
+                  // Tie the success notice to the booking ID returned by the server.
                   navigate(`/customer/bookings/${booking.id}`, {
                     state: { createdBookingId: booking.id },
                   });
