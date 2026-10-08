@@ -25,6 +25,7 @@ export function useApi<E extends Endpoint>(
     "E34",
   ].includes(endpoint);
   return useQuery({
+    // Partition cached responses by account as well as endpoint and request parameters.
     queryKey: [endpoint, user?.id || "public", id || "", query || {}],
     queryFn: ({ signal }) => api(endpoint, { id, query, signal }),
     enabled,
