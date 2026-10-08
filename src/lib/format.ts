@@ -4,6 +4,7 @@ export const label = (v: string) =>
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replaceAll("_", " ")
     .replace(/^./, (x) => x.toUpperCase());
+// Format decimal price strings directly to avoid floating-point conversion.
 export const money = (
   v: string,
   currency = import.meta.env.VITE_DISPLAY_CURRENCY || "",
