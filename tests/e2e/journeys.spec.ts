@@ -703,3 +703,71 @@ test("header shows active service links and responsive signed-out actions", asyn
     ),
   ).toBe(true);
 });
+
+for (const width of [1440, 768, 390]) {
+  test(`motion reveals remain usable without overflow at ${width}px`, async ({
+    page,
+  }) => {
+    await setup(page);
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+    await expect(page.locator(".hero")).toHaveAttribute(
+      "data-motion",
+      "visible",
+    );
+    const card = page.locator(".service-card").first();
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toHaveAttribute("data-motion", "visible");
+    await expect(card).toHaveCSS("opacity", "1");
+    if (width === 1440) {
+      await card.hover();
+      await expect(card).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -4)");
+      await expect(card.locator(".service-art")).toHaveCSS(
+        "transform",
+        "matrix(1.03, 0, 0, 1.03, 0, 0)",
+      );
+    }
+    await page.locator(".footer-inner").scrollIntoViewIfNeeded();
+    await expect(page.locator(".footer-inner")).toHaveCSS("opacity", "1");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: `test-results/motion-${width}.png`,
+      fullPage: true,
+    });
+  });
+}
+
+test("reduced motion removes reveals and hover movement", async ({ page }) => {
+  await setup(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator(".hero")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".hero h1")).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".footer-inner")).toHaveCSS("opacity", "1");
+  const card = page.locator(".service-card").first();
+  await card.hover();
+  await expect(card).toHaveCSS("transform", "none");
+  await expect(card).toHaveCSS("transition-duration", "0s");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(card).toHaveAttribute("data-motion", "visible");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator("[data-motion='pending']")).toHaveCount(0);
+  expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+});
+
+test("reveals fall back to visible content without IntersectionObserver", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.addInitScript(() =>
+    Object.defineProperty(window, "IntersectionObserver", { value: undefined }),
+  );
+  await page.goto("/");
+  await expect(page.locator(".footer-inner")).toHaveCSS("opacity", "1");
+  await expect(page.locator(".service-card").first()).toHaveCSS("opacity", "1");
+  await expect(page.locator("[data-motion='pending']")).toHaveCount(0);
+});

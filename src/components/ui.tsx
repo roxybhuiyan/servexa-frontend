@@ -46,7 +46,7 @@ export function Title({
   children?: ReactNode;
 }) {
   return (
-    <header className={s.title}>
+    <header className={s.title} data-reveal>
       <div>
         <small>{eyebrow || "SERVEXA"}</small>
         <h1>{title}</h1>
@@ -98,13 +98,13 @@ export function Empty({
 }
 export function Status({ value }: { value: string }) {
   return (
-    <span className={s.badge} data-status={value}>
+    <span key={value} className={`${s.badge} motion-status`} data-status={value}>
       {label(value)}
     </span>
   );
 }
 export function Panel({ children }: { children: ReactNode }) {
-  return <section className={s.panel}>{children}</section>;
+  return <section className={s.panel} data-reveal>{children}</section>;
 }
 export function Remote<T>({
   query,

@@ -10,6 +10,7 @@ import {
 import { useSession, home } from "./session";
 import type { UserRole } from "../api/types";
 import { Loading, ErrorBox, Title, Panel } from "../components/ui";
+import { useSiteMotion } from "../components/motion";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Catalog, ServiceDetail, ProviderDetail } from "../features/public";
@@ -98,6 +99,7 @@ const links = {
 function Shell() {
   const session = useSession(),
     location = useLocation();
+  const motionScope = useSiteMotion(location.pathname);
   const [error, setError] = useState<unknown>(null);
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,7 +109,7 @@ function Shell() {
       location.pathname,
     );
   return (
-    <div className="app-shell">
+    <div className="app-shell" ref={motionScope}>
       <a className="skip" href="#main">
         Skip to content
       </a>

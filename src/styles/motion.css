@@ -1,0 +1,216 @@
+/* Shared motion tokens. No layout properties or persistent compositor layers. */
+:root {
+  --motion-fast: 160ms;
+  --motion-normal: 240ms;
+  --motion-reveal: 420ms;
+  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes motion-up {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes motion-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes motion-success {
+  from {
+    opacity: 0;
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+[data-motion="pending"] {
+  opacity: 0;
+}
+[data-motion="visible"] {
+  animation: motion-up var(--motion-reveal) var(--motion-ease) backwards;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+/* Bounded stagger: even a long result list never waits beyond 150ms. */
+.grid > [data-reveal]:nth-child(4n + 2) {
+  --reveal-delay: 50ms;
+}
+.grid > [data-reveal]:nth-child(4n + 3) {
+  --reveal-delay: 100ms;
+}
+.grid > [data-reveal]:nth-child(4n + 4) {
+  --reveal-delay: 150ms;
+}
+.hero[data-motion="visible"] {
+  animation: none;
+}
+.hero[data-motion="visible"] > div:first-child > * {
+  animation: motion-up var(--motion-reveal) var(--motion-ease) backwards;
+}
+.hero[data-motion="visible"] h1 {
+  animation-delay: 50ms;
+}
+.hero[data-motion="visible"] p {
+  animation-delay: 100ms;
+}
+.hero[data-motion="visible"] .button {
+  animation-delay: 150ms;
+}
+.hero[data-motion="visible"] .hero-art {
+  animation: motion-success 500ms var(--motion-ease) 180ms backwards;
+}
+button,
+.button,
+.header-actions button,
+.header-actions .button {
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    background-color var(--motion-fast) ease-out,
+    border-color var(--motion-fast) ease-out,
+    box-shadow var(--motion-fast) ease-out;
+}
+a,
+.sidebar a,
+.categories a,
+.topbar .brand,
+.site-footer a:not(.brand) {
+  transition:
+    color var(--motion-fast) ease-out,
+    background-color var(--motion-fast) ease-out,
+    border-color var(--motion-fast) ease-out,
+    text-decoration-color var(--motion-fast) ease-out;
+}
+.brand sup,
+.card-footer > span {
+  transition: transform var(--motion-normal) var(--motion-ease);
+}
+input,
+textarea,
+select {
+  transition:
+    border-color var(--motion-fast) ease-out,
+    background-color var(--motion-fast) ease-out,
+    box-shadow var(--motion-fast) ease-out;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--forest);
+}
+.categories a[aria-current="page"] {
+  border-color: var(--forest);
+  background: #edf1eb;
+}
+.service-card {
+  transition:
+    transform var(--motion-normal) var(--motion-ease),
+    border-color var(--motion-normal) ease-out,
+    box-shadow var(--motion-normal) ease-out;
+}
+.service-card > a {
+  overflow: hidden;
+}
+.service-card img,
+.service-art {
+  transition: transform var(--motion-normal) var(--motion-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover,
+  .button:not([aria-disabled="true"]):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgb(26 60 43 / 10%);
+  }
+  .brand:hover sup {
+    transform: translate(1px, -1px);
+  }
+  .categories a:hover,
+  .sidebar a:not(.active):hover {
+    background: #edf1eb;
+    border-color: var(--forest);
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    border-color: #a8b9aa;
+    box-shadow: 0 8px 20px rgb(26 60 43 / 9%);
+  }
+  .service-card:hover img,
+  .service-card:hover .service-art {
+    transform: scale(1.03);
+  }
+  .service-card:hover .card-footer > span {
+    transform: translateX(2px);
+  }
+}
+button:not(:disabled):active,
+.button:not([aria-disabled="true"]):active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+button:disabled,
+.button[aria-disabled="true"] {
+  transform: none;
+  box-shadow: none;
+}
+[data-reveal]:focus-within {
+  opacity: 1;
+  animation: none;
+}
+.motion-status {
+  animation: motion-fade var(--motion-normal) ease-out;
+  transition:
+    color var(--motion-fast) ease-out,
+    background-color var(--motion-fast) ease-out;
+}
+[role="alert"],
+p[role="status"] {
+  animation: motion-up var(--motion-normal) var(--motion-ease);
+}
+p[role="status"] {
+  animation-name: motion-success;
+}
+dialog[open] {
+  animation: motion-up var(--motion-normal) var(--motion-ease);
+}
+dialog[open]::backdrop {
+  animation: motion-fade var(--motion-normal) ease-out;
+}
+.table-wrap,
+.activity {
+  animation: motion-fade var(--motion-reveal) ease-out;
+}
+@media (max-width: 600px) {
+  .header-navigation.is-open {
+    animation: motion-up var(--motion-normal) var(--motion-ease);
+  }
+}
+/* Never hide content or retain a delayed/hover transform in reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  [data-motion] {
+    opacity: 1;
+  }
+  button,
+  .button,
+  .service-card,
+  .service-card img,
+  .service-art,
+  .brand sup,
+  .card-footer > span {
+    transform: none !important;
+  }
+}

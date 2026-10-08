@@ -192,7 +192,7 @@ export function PaymentReturn() {
               {(v) => (
                 <>
                   <Status value={v.payment.status} />
-                  <p>
+                  <p key={v.payment.status} role="status">
                     {v.payment.status === "PAID" &&
                     ["CONFIRMED", "IN_PROGRESS", "COMPLETED"].includes(
                       v.bookingStatus,

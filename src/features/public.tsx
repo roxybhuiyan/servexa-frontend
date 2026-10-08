@@ -20,7 +20,7 @@ export const pageFilters: Filter[] = [
 export function ServiceCard({ service }: { service: PublicService }) {
   const [broken, setBroken] = useState(false);
   return (
-    <article className="service-card">
+    <article className="service-card" data-reveal>
       <Link to={`/services/${service.id}`} tabIndex={-1} aria-hidden="true">
         {service.imageUrl &&
         !broken &&
@@ -74,7 +74,7 @@ export function Catalog({
   return (
     <>
       {landing ? (
-        <section className="hero">
+        <section className="hero" data-reveal="hero">
           <div>
             <small>EVERYDAY NEEDS. CAPABLE HANDS.</small>
             <h1>
@@ -108,11 +108,21 @@ export function Catalog({
       {!providerId && (
         <Remote query={categories}>
           {(items) => (
-            <nav className="categories" aria-label="Service categories">
-              <Link to="/services">All services</Link>
+            <nav
+              className="categories"
+              aria-label="Service categories"
+              data-reveal
+            >
+              <Link
+                to="/services"
+                aria-current={!filters.category ? "page" : undefined}
+              >
+                All services
+              </Link>
               {items.map((c) => (
                 <Link
                   key={c.id}
+                  aria-current={filters.category === c.id ? "page" : undefined}
                   to={`/services?category=${encodeURIComponent(c.id)}`}
                 >
                   {c.name} ↗
@@ -168,7 +178,7 @@ export function Catalog({
         )}
       </Remote>
       {landing && (
-        <section className="steps">
+        <section className="steps" data-reveal>
           <div>
             <small>01 / DISCOVER</small>
             <h2>A service for your day.</h2>

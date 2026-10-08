@@ -773,12 +773,6 @@ dt {
     overflow-wrap: anywhere;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation: none !important;
-    scroll-behavior: auto !important;
-  }
-}
 
 .grid:has(.service-card) {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));

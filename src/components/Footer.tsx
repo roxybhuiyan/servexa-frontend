@@ -6,7 +6,7 @@ export function Footer() {
   const providerLinks = !hydrating && (!user || user.role === "PROVIDER");
   return (
     <footer className="site-footer">
-      <div className="layout-container footer-inner">
+      <div className="layout-container footer-inner" data-reveal>
         <div className="footer-columns">
           <div className="footer-brand-block">
             <Link className="brand" to="/">
