@@ -17,6 +17,7 @@ export const pageFilters: Filter[] = [
   { name: "limit", options: ["10", "20", "50", "100"] },
   { name: "sortOrder", options: ["asc", "desc"] },
 ];
+// The title link is the accessible navigation target; the image link is decorative.
 export function ServiceCard({ service }: { service: PublicService }) {
   const [broken, setBroken] = useState(false);
   return (
