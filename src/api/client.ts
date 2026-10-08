@@ -129,6 +129,7 @@ export class ApiClient {
     } = {},
   ): Promise<T> {
     const { method = "GET", body, signal } = options;
+    // Capture the session version so responses from an earlier session are rejected.
     const epoch = this.epoch;
     const access = this.tokens?.accessToken;
     try {
