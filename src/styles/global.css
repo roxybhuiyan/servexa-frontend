@@ -455,19 +455,112 @@ td button {
   font-size: 0.85rem;
   color: var(--muted);
 }
-footer {
-  border-top: 1px solid var(--line);
-  font-size: 0.8rem;
-  color: var(--muted);
+.site-footer {
+  background: var(--forest);
+  color: var(--paper);
+  border-top: 1px solid var(--forest);
 }
 .footer-inner {
+  padding-block: 48px 24px;
+}
+.footer-columns {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, minmax(0, 1fr));
+  gap: 40px;
+  padding-bottom: 40px;
+}
+.footer-columns > * {
+  min-width: 0;
+}
+.site-footer .brand {
+  color: var(--paper);
+  font-size: 1.8rem;
+  width: fit-content;
+}
+.site-footer .brand sup {
+  color: var(--mint);
+}
+.site-footer .footer-tagline {
+  color: var(--paper);
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
+.site-footer .footer-description {
+  color: var(--paper);
+  opacity: 0.8;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  margin: 0;
+  max-width: 32ch;
+}
+.footer-columns nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.footer-columns h2 {
+  color: var(--mint);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 4px 0 14px;
+}
+.site-footer a:not(.brand) {
+  color: var(--paper);
+  text-decoration: none;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding-block: 8px;
+  overflow-wrap: anywhere;
+  transition: color 160ms ease;
+}
+.site-footer a:hover {
+  color: var(--mint);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.site-footer a:focus-visible {
+  outline-color: var(--mint);
+}
+.footer-bottom {
+  border-top: 1px solid rgb(247 247 245 / 22%);
+  padding-top: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 24px;
-  padding-block: 36px;
+  gap: 12px 24px;
+  font-size: 0.75rem;
+  line-height: 1.6;
 }
+.footer-bottom a span {
+  color: var(--mint);
+  margin-left: 8px;
+}
+@media (max-width: 900px) {
+  .footer-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .footer-inner {
+    padding-block: 36px 20px;
+  }
+  .footer-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-bottom: 28px;
+  }
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .skip {
   position: absolute;
   left: 16px;
@@ -590,10 +683,6 @@ dt {
   }
   .auth {
     margin: 24px auto;
-  }
-  .footer-inner {
-    flex-direction: column;
-    align-items: flex-start;
   }
   th,
   td {

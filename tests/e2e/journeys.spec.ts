@@ -280,7 +280,10 @@ test("provider publishes a service and accepts an order", async ({ page }) => {
     page.getByRole("link", { name: "Availability", exact: true }),
   ).toHaveCount(0);
   expect(calls.some((c) => c.path.includes("availability"))).toBe(false);
-  await page.getByRole("link", { name: "Jobs", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Workspace navigation" })
+    .getByRole("link", { name: "Jobs", exact: true })
+    .click();
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
   await page.getByRole("button", { name: "Accept Order" }).click();
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
@@ -352,7 +355,10 @@ test("wrong role and pending approval protect private API calls", async ({
 }) => {
   const state = await setup(page, "PROVIDER", { approval: "PENDING" });
   await login(page);
-  await page.getByRole("link", { name: "Jobs", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Workspace navigation" })
+    .getByRole("link", { name: "Jobs", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Provider approval required" }),
   ).toBeVisible();
@@ -551,7 +557,10 @@ test("provider rejects a pending order and refreshes server status", async ({
 }) => {
   const { calls } = await setup(page, "PROVIDER");
   await login(page);
-  await page.getByRole("link", { name: "Jobs", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Workspace navigation" })
+    .getByRole("link", { name: "Jobs", exact: true })
+    .click();
   await page.getByRole("link", { name: "Home cleaning", exact: true }).click();
   await page.getByRole("button", { name: "Reject Order", exact: true }).click();
   await page.getByRole("button", { name: "Confirm", exact: true }).click();
@@ -559,4 +568,68 @@ test("provider rejects a pending order and refreshes server status", async ({
   expect(
     calls.some((c) => c.path.endsWith("/reject") && c.method === "PATCH"),
   ).toBe(true);
+});
+
+for (const role of ["CUSTOMER", "PROVIDER", "ADMIN"])
+  test(`footer respects ${role} routes`, async ({ page }) => {
+    await setup(page, role);
+    await login(page);
+    const footer = page.getByRole("contentinfo");
+    await expect(
+      footer.getByRole("link", { name: "Sign In", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      footer.getByRole("link", { name: "My Bookings", exact: true }),
+    ).toHaveCount(role === "CUSTOMER" ? 1 : 0);
+    await expect(
+      footer.getByRole("link", { name: "Add Service", exact: true }),
+    ).toHaveCount(role === "PROVIDER" ? 1 : 0);
+    for (const label of [
+      "Workspace",
+      "My Account",
+      ...(role === "CUSTOMER"
+        ? ["My Bookings"]
+        : role === "PROVIDER"
+          ? ["Provider Workspace", "Add Service", "Manage Services", "Jobs"]
+          : []),
+    ]) {
+      const link = footer.getByRole("link", { name: label, exact: true });
+      const path = await link.getAttribute("href");
+      await link.click();
+      await expect(page).toHaveURL(
+        new RegExp(path!.replaceAll("/", "\\/") + "$"),
+      );
+      await expect(
+        page.getByRole("heading", {
+          name: /could not find|not available to your account/,
+        }),
+      ).toHaveCount(0);
+    }
+  });
+
+test("signed-out footer uses existing routes and preserves return-to login", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/");
+  const footer = page.getByRole("contentinfo");
+  for (const label of [
+    "Explore Services",
+    "All Services",
+    "Categories",
+    "Sign In",
+    "Sign Up",
+  ]) {
+    const link = footer.getByRole("link", { name: label, exact: true });
+    const href = await link.getAttribute("href");
+    await link.click();
+    await expect(page).toHaveURL(new RegExp(href! + "$"));
+  }
+  await footer.getByRole("link", { name: "Add Service", exact: true }).click();
+  await expect(page).toHaveURL(/login\?returnTo=.*provider.*services.*new/);
+  await expect(
+    footer.getByText(
+      `© ${new Date().getFullYear()} Servexa. All rights reserved.`,
+    ),
+  ).toBeVisible();
 });

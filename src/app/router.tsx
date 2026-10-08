@@ -10,6 +10,7 @@ import {
 import { useSession, home } from "./session";
 import type { UserRole } from "../api/types";
 import { Loading, ErrorBox, Title, Panel } from "../components/ui";
+import { Footer } from "../components/Footer";
 import { Catalog, ServiceDetail, ProviderDetail } from "../features/public";
 import { AuthPage, Profile } from "../features/auth";
 import { BookingList, NewBooking, BookingDetail } from "../features/bookings";
@@ -168,15 +169,7 @@ function Shell() {
           </Suspense>
         </main>
       </div>
-      <footer>
-        <div className="layout-container footer-inner">
-          <Link className="brand" to="/">
-            Servexa ↗
-          </Link>
-          <span>Good service. Less searching.</span>
-          <Link to="/services">Explore services</Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
