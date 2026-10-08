@@ -633,3 +633,73 @@ test("signed-out footer uses existing routes and preserves return-to login", asy
     ),
   ).toBeVisible();
 });
+
+for (const role of ["CUSTOMER", "PROVIDER"])
+  test(`header mobile menu preserves ${role} navigation and logout`, async ({
+    page,
+  }) => {
+    await setup(page, role);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await login(page);
+    const header = page.getByRole("banner");
+    const menu = header.getByRole("button", { name: "Menu", exact: true });
+    const navigation = header.getByRole("navigation", {
+      name: "Main navigation",
+    });
+    await expect(menu).toHaveAttribute("aria-expanded", "false");
+    await expect(navigation).toBeHidden();
+    await menu.click();
+    await expect(
+      navigation.getByRole("link", { name: "Workspace", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeFocused();
+    await expect(navigation).toBeHidden();
+    await menu.click();
+    await navigation
+      .getByRole("link", { name: "Explore services", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/services$/);
+    await expect(navigation).toBeHidden();
+    await menu.click();
+    await expect(
+      navigation.getByRole("link", { name: "Explore services", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
+    await navigation
+      .getByRole("link", { name: "Workspace", exact: true })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/${role.toLowerCase()}$`));
+    await menu.click();
+    await navigation
+      .getByRole("button", { name: "Sign out", exact: true })
+      .click();
+    await expect(navigation).toBeHidden();
+    await menu.click();
+    await expect(
+      navigation.getByRole("link", { name: "Sign in", exact: true }),
+    ).toBeVisible();
+  });
+
+test("header shows active service links and responsive signed-out actions", async ({
+  page,
+}) => {
+  await setup(page);
+  await page.goto("/services/svc1");
+  const header = page.getByRole("banner");
+  await expect(
+    header.getByRole("link", { name: "Explore services", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect(
+    header.getByRole("link", { name: "Sign in", exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 320, height: 800 });
+  await header.getByRole("button", { name: "Menu", exact: true }).click();
+  await header.getByRole("link", { name: "Get started", exact: false }).click();
+  await expect(page).toHaveURL(/\/register$/);
+  await expect(header.getByRole("navigation")).toBeHidden();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});

@@ -10,6 +10,7 @@ import {
 import { useSession, home } from "./session";
 import type { UserRole } from "../api/types";
 import { Loading, ErrorBox, Title, Panel } from "../components/ui";
+import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Catalog, ServiceDetail, ProviderDetail } from "../features/public";
 import { AuthPage, Profile } from "../features/auth";
@@ -110,37 +111,7 @@ function Shell() {
       <a className="skip" href="#main">
         Skip to content
       </a>
-      <header className="topbar">
-        <div className="layout-container topbar-inner">
-          <Link className="brand" to="/">
-            s<span>Servexa</span>
-            <sup>↗</sup>
-          </Link>
-          <nav aria-label="Main navigation">
-            <NavLink to="/services">Explore services</NavLink>
-            {session.user ? (
-              <>
-                <Link to={home(session.user.role)}>Workspace</Link>
-                <button
-                  onClick={() => {
-                    setError(null);
-                    void session.logout().catch(setError);
-                  }}
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">Sign in</Link>
-                <Link className="button primary" to="/register">
-                  Get started ↗
-                </Link>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
+      <Header onError={setError} />
       <div
         className={
           privatePage && session.user
