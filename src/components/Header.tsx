@@ -13,6 +13,7 @@ export function Header({ onError }: { onError: (error: unknown) => void }) {
     (location.pathname === workspace ||
       location.pathname.startsWith(`${workspace}/`) ||
       /^\/(account|payments)(\/|$)/.test(location.pathname));
+  // Close the mobile menu when navigation or the signed-in account changes.
   useEffect(() => {
     setOpen(false);
   }, [location.pathname, location.search, session.user?.id]);
