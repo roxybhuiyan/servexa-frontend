@@ -110,6 +110,7 @@ export type ProviderStatusBody = {
   status: "PENDING" | "APPROVED" | "REJECTED";
 };
 
+// Partial service updates still need at least one field to avoid empty requests.
 export const servicePatch = service
   .partial()
   .refine((v) => Object.keys(v).length > 0, {
