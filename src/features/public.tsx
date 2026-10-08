@@ -61,7 +61,7 @@ export function Catalog({
   const services = useApi("E12", undefined, {
     ...filters,
     ...(providerId ? { provider: providerId } : {}),
-    ...(landing ? { limit: 6 } : {}),
+    ...(landing ? { limit: 8 } : {}),
   });
   const change = (v: Record<string, unknown>) =>
     setParams(
@@ -148,7 +148,7 @@ export function Catalog({
         {(data) => (
           <>
             {data.data.length ? (
-              <div className="grid">
+              <div className={landing ? "grid home-services-grid" : "grid"}>
                 {data.data.map((v) => (
                   <ServiceCard key={v.id} service={v} />
                 ))}

@@ -619,3 +619,18 @@ dt {
 .grid:has(.service-card) {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 }
+
+/* Homepage only; catalog grids retain their existing layout. */
+.grid.home-services-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  .grid.home-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .grid.home-services-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
