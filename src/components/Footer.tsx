@@ -3,6 +3,7 @@ import { home, useSession } from "../app/session";
 
 export function Footer() {
   const { user, hydrating } = useSession();
+  // Wait for session hydration before deciding whether to expose provider links.
   const providerLinks = !hydrating && (!user || user.role === "PROVIDER");
   return (
     <footer className="site-footer">
