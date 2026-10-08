@@ -41,7 +41,7 @@ export function Header({ onError }: { onError: (error: unknown) => void }) {
           aria-label="Servexa home"
           onClick={() => setOpen(false)}
         >
-          s<span>Servexa</span>
+          <span>Servexa</span>
           <sup aria-hidden="true">↗</sup>
         </Link>
         <button

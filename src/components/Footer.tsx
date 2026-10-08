@@ -10,7 +10,7 @@ export function Footer() {
         <div className="footer-columns">
           <div className="footer-brand-block">
             <Link className="brand" to="/">
-              s<span>Servexa</span>
+              <span>Servexa</span>
               <sup aria-hidden="true">↗</sup>
             </Link>
             <p className="footer-tagline">Good service. Less searching.</p>
