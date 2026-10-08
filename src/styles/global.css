@@ -8,6 +8,8 @@
   --line: #d7ddd6;
   --mint: #9effbf;
   --paper: #f7f7f5;
+  --layout-max-width: 1320px;
+  --layout-gutter: 48px;
 }
 * {
   box-sizing: border-box;
@@ -112,19 +114,44 @@ p {
 main {
   min-width: 0;
 }
+.app-shell {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.app-shell > .public-shell,
+.app-shell > .workspace {
+  flex: 1;
+  width: 100%;
+}
+.layout-container {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding-inline: var(--layout-gutter);
+}
 .topbar {
-  height: 88px;
+  border-bottom: 1px solid var(--line);
+}
+.topbar-inner {
+  min-height: 88px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 5%;
-  border-bottom: 1px solid var(--line);
   gap: 24px;
+  padding-block: 16px;
+}
+.topbar .brand {
+  flex-shrink: 0;
 }
 .topbar nav {
   display: flex;
   align-items: center;
   gap: 28px;
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   font-size: 0.875rem;
 }
 .topbar nav > a {
@@ -146,9 +173,7 @@ main {
   font-size: 1.15rem;
 }
 .public-shell {
-  max-width: 1320px;
-  margin: auto;
-  padding: 0 48px 72px;
+  padding-block: 0 72px;
 }
 .workspace {
   display: grid;
@@ -432,13 +457,16 @@ td button {
 }
 footer {
   border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.footer-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 24px;
-  padding: 36px 5%;
-  font-size: 0.8rem;
-  color: var(--muted);
+  padding-block: 36px;
 }
 .skip {
   position: absolute;
@@ -464,6 +492,9 @@ dt {
   font-size: 0.85rem;
 }
 @media (max-width: 900px) {
+  :root {
+    --layout-gutter: 24px;
+  }
   .workspace {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -501,17 +532,20 @@ dt {
     padding: 24px;
   }
   .public-shell {
-    padding: 0 24px 48px;
+    padding-block: 0 48px;
   }
 }
 @media (max-width: 600px) {
-  .topbar {
-    padding: 16px 20px;
-    height: auto;
+  :root {
+    --layout-gutter: 20px;
+  }
+  .topbar-inner {
     flex-wrap: wrap;
     gap: 14px;
   }
   .topbar nav {
+    width: 100%;
+    justify-content: flex-start;
     gap: 14px;
     flex-wrap: wrap;
     font-size: 0.8rem;
@@ -549,7 +583,7 @@ dt {
     border-bottom: 1px solid var(--line);
   }
   .public-shell {
-    padding: 0 20px 40px;
+    padding-block: 0 40px;
   }
   .workspace main {
     padding: 20px;
@@ -557,8 +591,9 @@ dt {
   .auth {
     margin: 24px auto;
   }
-  footer {
-    flex-wrap: wrap;
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
   }
   th,
   td {

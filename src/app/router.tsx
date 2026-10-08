@@ -105,41 +105,47 @@ function Shell() {
       location.pathname,
     );
   return (
-    <>
+    <div className="app-shell">
       <a className="skip" href="#main">
         Skip to content
       </a>
       <header className="topbar">
-        <Link className="brand" to="/">
-          s<span>Servexa</span>
-          <sup>↗</sup>
-        </Link>
-        <nav aria-label="Main navigation">
-          <NavLink to="/services">Explore services</NavLink>
-          {session.user ? (
-            <>
-              <Link to={home(session.user.role)}>Workspace</Link>
-              <button
-                onClick={() => {
-                  setError(null);
-                  void session.logout().catch(setError);
-                }}
-              >
-                Sign out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">Sign in</Link>
-              <Link className="button primary" to="/register">
-                Get started ↗
-              </Link>
-            </>
-          )}
-        </nav>
+        <div className="layout-container topbar-inner">
+          <Link className="brand" to="/">
+            s<span>Servexa</span>
+            <sup>↗</sup>
+          </Link>
+          <nav aria-label="Main navigation">
+            <NavLink to="/services">Explore services</NavLink>
+            {session.user ? (
+              <>
+                <Link to={home(session.user.role)}>Workspace</Link>
+                <button
+                  onClick={() => {
+                    setError(null);
+                    void session.logout().catch(setError);
+                  }}
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">Sign in</Link>
+                <Link className="button primary" to="/register">
+                  Get started ↗
+                </Link>
+              </>
+            )}
+          </nav>
+        </div>
       </header>
       <div
-        className={privatePage && session.user ? "workspace" : "public-shell"}
+        className={
+          privatePage && session.user
+            ? "workspace"
+            : "layout-container public-shell"
+        }
       >
         {privatePage && session.user && (
           <aside className="sidebar">
@@ -163,13 +169,15 @@ function Shell() {
         </main>
       </div>
       <footer>
-        <Link className="brand" to="/">
-          Servexa ↗
-        </Link>
-        <span>Good service. Less searching.</span>
-        <Link to="/services">Explore services</Link>
+        <div className="layout-container footer-inner">
+          <Link className="brand" to="/">
+            Servexa ↗
+          </Link>
+          <span>Good service. Less searching.</span>
+          <Link to="/services">Explore services</Link>
+        </div>
       </footer>
-    </>
+    </div>
   );
 }
 function Failure({ forbidden = false }: { forbidden?: boolean }) {
