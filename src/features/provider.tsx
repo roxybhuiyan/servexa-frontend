@@ -21,6 +21,7 @@ import type { OwnService } from "../api/types";
 import { money } from "../lib/format";
 import { BookingList } from "./bookings";
 import { Reviews, pageFilters } from "./public";
+// Render protected provider tools only after the profile API reports approval.
 export function Approval({ children }: { children: ReactNode }) {
   const q = useApi("E08");
   return (
